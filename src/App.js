@@ -6,6 +6,8 @@ import Signup from "./pages/Singup";
 import Archive from "./pages/archive";
 import Consulte from "./pages/consulte";
 import Statistiques from "./pages/tableau_bord";
+import Adduser from "./pages/adduser";
+
 function App() {
 	const user = localStorage.getItem("token");
 	return (
@@ -18,6 +20,8 @@ function App() {
 			<Route path="/consulte" exact element={<Consulte />} />
 			<Route path="/tableau_de_bord" exact element={<Statistiques />} />
 			<Route path="/" element={<Navigate replace to="/login" />} /> 
+			<Route path="/adduser" exact element={<Adduser />} />
+			<Route path="/" element={<Navigate replace to="/login" />} />
 		</Routes>
 	);
 }
