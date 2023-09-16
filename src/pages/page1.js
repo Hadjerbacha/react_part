@@ -1,16 +1,16 @@
 import React from "react";
-import Header from "./header";
 import TablePage from "./TablePage";
 import Email from "./Email";
+import Navbar from './Navbar';
 
 const Page1 = () => {
   return (
     <div>
-      <Header />
+      <Navbar />
       <TablePage />
       <Email />
     </div>
   );
 };
 
-export default Page1;
+export default Page1; 
