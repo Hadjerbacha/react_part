@@ -1,0 +1,132 @@
+/* CSS pour la barre d'années 
+.year-bar {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+  }
+  
+  .year-button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .year-button.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  
+  .content {
+    overflow-x: auto;
+    padding: 10px;
+  }
+  */
+/* ArchivePage.css */
+
+.archive-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin: 20px;
+  }
+  
+  .horizontal-scroll-container {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .horizontal-scroll {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  
+  .year-button {
+    background-color: #3498db; /* Couleur de fond des boutons d'année */
+    color: #fff; /* Couleur du texte des boutons d'année */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-right: 10px; /* Espacement entre les boutons d'année */
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .year-button:last-child {
+    margin-right: 0; /* Aucun espacement à droite pour le dernier bouton */
+  }
+  
+  .scroll-button {
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 1;
+  
+    
+    &.right {
+      position: absolute;
+      right: 10px; /* Position de la flèche droite */
+    }
+    &.left {
+        position: absolute;
+        left: 10px; /* Position de la flèche gauche */
+      }
+  
+    &:disabled {
+      cursor: not-allowed;
+      background-color: #ccc; /* Couleur de fond désactivée */
+      color: #666; /* Couleur de texte désactivée */
+    }
+  }
+  
+  /* Styles au survol des flèches */
+  .scroll-button:hover {
+    background-color: #555;
+    color: #fff;
+  }
+  
+  /* Styles au clic des flèches */
+  .scroll-button:active {
+    background-color: #444;
+  }
+  
+ /* Style de l'icône de la flèche gauche */
+.scroll-button.left .fa-chevron-left {
+    transform: rotate(180deg); /* Ajustez la rotation pour afficher correctement la flèche vers la gauche */
+  }
+  
+  /* Désactivation de la flèche gauche lorsqu'elle atteint le début */
+  .scroll-button.left.disabled {
+    background-color: transparent;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Désactivation de la flèche droite lorsqu'elle atteint la fin */
+  .scroll-button.right.disabled {
+    background-color: transparent;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  
+  
+  
+  

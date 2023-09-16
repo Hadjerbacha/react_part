@@ -57,6 +57,7 @@ function TablePage() {
     userId:'',
 
   });
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const afficherImage = (event) => {
@@ -138,6 +139,9 @@ function TablePage() {
     const selectedFile = e.target.files[0];
     setFacture({ ...facture, fichier: selectedFile });
   
+
+ /* const handleAdd = () => {
+
     // Upload the file to the server and get the image URL
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -196,7 +200,46 @@ function TablePage() {
       window.location.reload();
     })
     .catch(error => console.error('Erreur lors de l\'ajout de la facture:', error));
-  };
+  };*/
+  // Créez une fonction pour vérifier si le numéro de facture existe déjà pour le prestataire/fournisseur sélectionné
+const isFactureNUnique = (factureN, prestataire) => {
+  // Filtrer la liste des factures pour trouver celles qui ont le même numéro de facture
+  const facturesAvecMemeFactureN = factures.filter(
+    (facture) =>
+      facture.factureN === factureN &&
+      facture.Prestataire_fournisseur === prestataire
+  );
+
+  // Si aucune facture avec le même numéro de facture n'est trouvée, le numéro de facture est unique
+  return facturesAvecMemeFactureN.length === 0;
+};
+const [error, setError] = useState(null);
+const handleAdd = () => {
+  // Vérifiez d'abord si le numéro de facture est unique pour le prestataire sélectionné
+  const isUnique = isFactureNUnique(formData.factureN, formData.Prestataire_fournisseur);
+
+  if (isUnique) {
+    // Si le numéro de facture est unique, vous pouvez ajouter la facture
+    fetch('http://localhost:5000/api/facture', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Une fois la facture ajoutée avec succès, vous pouvez rafraîchir la liste des factures pour afficher la nouvelle facture
+      console.log('Facture ajoutée avec succès:', data);
+      // Rafraîchir la liste des factures en rechargeant la page (ou en utilisant un autre moyen pour mettre à jour les données)
+      window.location.reload();
+    })
+    .catch(error => console.error('Erreur lors de l\'ajout de la facture:', error));
+  } else {
+    // Si le numéro de facture n'est pas unique, mettez à jour l'état d'erreur
+    setError('Le numéro de facture existe déjà pour ce prestataire/fournisseur.');
+  }
+};
   
 
   /*const [showEditModal, setShowEditModal] = useState(false);
@@ -422,6 +465,10 @@ function TablePage() {
               </Form.Group>
               
           </Form>
+          <br/>
+          {error && (
+            <div className="alert alert-danger">{error}</div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>Fermer</Button>
