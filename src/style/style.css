@@ -3,3 +3,69 @@
     float: right;
     
   }
+  .div-table{
+    padding: 3%;
+    padding-top: 6%;
+  }
+  .print-content {
+    display: none;
+    padding-top: 5%;
+  }
+  .print-header{
+    padding: 5%;
+  }
+  .column{
+    display: inline;
+    padding: 1%;
+  }
+  .logo{
+    width: 90px;
+    height: 110px;
+    display: inline;
+    position: relative;
+    top: 0.5%;
+    left:6%;
+  }
+  .sender{
+    display: inline;
+    position: relative;
+    top: 5%;
+    left:8%;
+  }
+  .sender2{
+    display: inline;
+    position: relative;
+    left:1.5%;
+  }
+  .sender3{
+    display: inline;
+    position: relative;
+    left:10.5%;
+  }
+  .envoi{
+    display: inline;
+    position: relative;
+    top: 2%;
+    left: 35%;
+  }
+  .recipient {
+    display: inline;
+    position: relative;
+  }
+  
+  .finance {
+    position: absolute;
+    left: 35%;
+  }
+  
+  .Liaison {
+    position: absolute;
+    left: 45%;
+  }
+  
+  .user{
+    display: inline;
+    position: relative;
+    top: 3.5%;
+    left: 60%;
+  }

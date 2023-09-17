@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import Select from 'react-select';
 
 export const handleEdit = (facture) => {
+
   fetch(`http://localhost:5000/api/facture/${facture._id}`, {
     method: 'PUT',
     headers: {
@@ -19,9 +20,10 @@ export const handleEdit = (facture) => {
   .catch(error => console.error('Erreur lors de la mise à jour de la facture:', error));
 };
 
-  export default function EditModal({ facture, onUpdate}) {
-    const [formData, setFormData] = useState({
-      N: facture.N,
+  export default function EditModal({ facture}) {
+    function EditModal({ facture, onUpdate }) {
+      const [formData, setFormData] = useState({
+        N: facture.N,
       Prestataire_fournisseur: facture.Prestataire_fournisseur,
       factureN: facture.factureN,
       Datefacture: facture.Datefacture,
@@ -36,13 +38,13 @@ export const handleEdit = (facture) => {
       arrivee: facture.arrivee,
     });
   
-
+/*
   const handleUpdate = () => {
     // Ici, vous pouvez ajouter la logique pour effectuer la mise à jour de la facture
     // en utilisant les données de formData et la fonction onUpdate passée depuis le composant parent
     onUpdate(formData);
   };
-
+*/
   const options = [
     { value: 'Ensp', label: 'Ensp' },
     { value: 'Enageo', label: 'Enageo' },
@@ -59,15 +61,24 @@ export const handleEdit = (facture) => {
     { value: 'Ben Osmane', label: 'Ben Osmane' },
     { value: 'Beau rivage zelfana', label: 'Beau rivage zelfana' }
   ];
-
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const handleShowModalEdit = (facture) => { setShowModalEdit(true); };
+  const handleCloseModalEdit = () => { setShowModalEdit(false);};
   const MyComponent = () => (
     <Select options={options} 
     value={options.find(option => option.value === formData.Prestataire_fournisseur)}
   onChange={(selectedOption) => setFormData({ ...formData, Prestataire_fournisseur: selectedOption.value })}
 />
   );
+  
+  const handleUpdate = () => {
+    onUpdate(formData);
+    setShowModalEdit(false);
+  };
 
-  return (
+  return /*(
+
+   
     <Modal show={true} onHide={() => {}}>
       <Modal.Header closeButton>
         <Modal.Title>Modifier la facture</Modal.Title>
@@ -157,5 +168,5 @@ export const handleEdit = (facture) => {
         </Button>
       </Modal.Footer>
     </Modal>
-  );
-}
+  );*/
+}}
