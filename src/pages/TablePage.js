@@ -19,10 +19,17 @@ function TablePage() {
   const [userId, setUserId] = useState( "");
   const [showModal, setShowModal] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
+<<<<<<< HEAD
  // const [showSearchBar, setShowSearchBar] = useState(false);
   const [factures, setFactures] = useState([]);
   const [showImage, setShowImage] = useState(false);
  // const [imageSrc, setImageSrc] = useState('');
+=======
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [factures, setFactures] = useState([]);
+  const [showImage, setShowImage] = useState(false);
+  const [imageSrc, setImageSrc] = useState('');
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   const [facture, setFacture] = useState({
     _id:'',
     N: '',
@@ -40,7 +47,10 @@ function TablePage() {
     arrivee: '',
 
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   const [formData, setFormData] = useState({
     N: '',
     Prestataire_fournisseur: '',
@@ -60,13 +70,21 @@ function TablePage() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+<<<<<<< HEAD
   
   /*const afficherImage = (event) => {
+=======
+  const afficherImage = (event) => {
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
     event.preventDefault();
     const imageSrc = event.target.src;
     setImageSrc(imageSrc);
     setShowImage(true);
+<<<<<<< HEAD
   };*/
+=======
+  };
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   
 
   const fermerImage = () => {
@@ -135,7 +153,10 @@ function TablePage() {
 
   const handleCloseModalEdit = () => { setShowModalEdit(false);};
   
+<<<<<<< HEAD
 
+=======
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   const handleFileChange = async (e) => {
     console.log("apl change file ")
     const selectedFile = e.target.files[0];
@@ -182,7 +203,11 @@ function TablePage() {
     .catch(error => console.error('Erreur lors de la mise à jour de la facture:', error));
   };
 
+<<<<<<< HEAD
   /*const handleAdd = () => {
+=======
+  const handleAdd = () => {
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
     formData.userId=userId
     fetch('http://localhost:5000/api/facture', {
       method: 'POST',
@@ -762,7 +787,11 @@ const handleAdd = () => {
   </thead>
   <tbody>
     {searchResults
+<<<<<<< HEAD
     .filter(facture => facture.userId === userId)
+=======
+    .filter(facture => facture.userId == userId)
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
     .map((facture, index) => (
       <tr key={facture._id}>
         <td>{generateInvoiceNumber(facture.N)}</td>
@@ -800,7 +829,11 @@ const handleAdd = () => {
 
       {showImage && (
         <div className="image-overlay" onClick={fermerImage}>
+<<<<<<< HEAD
           <img alt="Facture Affichée" />
+=======
+          <img src={imageSrc} alt="Facture Affichée" />
+>>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
         </div>
       )}
       <br/><br/>
