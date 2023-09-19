@@ -1,5 +1,4 @@
 /*import React, { useState } from "react";
-<<<<<<< HEAD
 import { Link } from "react-router-dom";
 import { Nav, NavDropdown } from "react-bootstrap";
 import { FaUserCircle, FaBars } from "react-icons/fa";
@@ -62,7 +61,7 @@ const Header = () => {
 export default Header;*/
 /*import React from "react";
 import { Link } from "react-router-dom";
-=======
+
 import { Link } from "react-router-dom";
 import { Nav, NavDropdown } from "react-bootstrap";
 import { FaUserCircle, FaBars } from "react-icons/fa";
@@ -125,7 +124,6 @@ const Header = () => {
 export default Header;*/
 import React from "react";
 import { Link } from "react-router-dom";
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
 import { Nav, NavDropdown } from 'react-bootstrap';
 import { FaUserCircle } from 'react-icons/fa';
 const header = () => {
@@ -186,8 +184,4 @@ const header = () => {
   );
 };
 
-<<<<<<< HEAD
-export default header;*/
-=======
 export default header;
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef

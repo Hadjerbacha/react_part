@@ -11,7 +11,7 @@ export const SidebarData = [
   },
   {
     title: 'Ajouter Prestataire',
-    path: '/page2',
+    path: '/prestataire',
     icon: <FaIcons.FaPlus />,
     cName: 'nav-text'
   },

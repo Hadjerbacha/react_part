@@ -4,6 +4,7 @@ import handleExportToExcel from './excel';
 import Select from 'react-select';
 import handleDelete from './delete_fac';
 import imprimer from './imprimer';
+import Navbar from './Navbar';
 import jwtDecode from 'jwt-decode';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,17 +20,12 @@ function TablePage() {
   const [userId, setUserId] = useState( "");
   const [showModal, setShowModal] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
-<<<<<<< HEAD
  // const [showSearchBar, setShowSearchBar] = useState(false);
   const [factures, setFactures] = useState([]);
   const [showImage, setShowImage] = useState(false);
  // const [imageSrc, setImageSrc] = useState('');
-=======
-  const [showSearchBar, setShowSearchBar] = useState(false);
-  const [factures, setFactures] = useState([]);
-  const [showImage, setShowImage] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
+
+
   const [facture, setFacture] = useState({
     _id:'',
     N: '',
@@ -47,10 +43,7 @@ function TablePage() {
     arrivee: '',
 
   });
-<<<<<<< HEAD
 
-=======
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   const [formData, setFormData] = useState({
     N: '',
     Prestataire_fournisseur: '',
@@ -70,21 +63,19 @@ function TablePage() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-<<<<<<< HEAD
+
   
   /*const afficherImage = (event) => {
-=======
+
   const afficherImage = (event) => {
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
+
     event.preventDefault();
     const imageSrc = event.target.src;
     setImageSrc(imageSrc);
     setShowImage(true);
-<<<<<<< HEAD
+<<<<<<< HEADf
   };*/
-=======
-  };
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
+
   
 
   const fermerImage = () => {
@@ -153,10 +144,7 @@ function TablePage() {
 
   const handleCloseModalEdit = () => { setShowModalEdit(false);};
   
-<<<<<<< HEAD
 
-=======
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
   const handleFileChange = async (e) => {
     console.log("apl change file ")
     const selectedFile = e.target.files[0];
@@ -203,11 +191,10 @@ function TablePage() {
     .catch(error => console.error('Erreur lors de la mise à jour de la facture:', error));
   };
 
-<<<<<<< HEAD
+
   /*const handleAdd = () => {
-=======
+
   const handleAdd = () => {
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
     formData.userId=userId
     fetch('http://localhost:5000/api/facture', {
       method: 'POST',
@@ -385,7 +372,8 @@ const handleAdd = () => {
   const fetchPrestataires = async () => {
   try {
   const response = await axios.get('http://localhost:5000/api/prestataires');
-  setPrestataires(response.data.map(prestataire => ({
+  setPrestataires(response.data
+    .map(prestataire => ({
   value: prestataire.Nom_pres,
   label: prestataire.Nom_pres,
   })
@@ -397,18 +385,19 @@ const handleAdd = () => {
   
   const MyComponent = () => (
   <Select options={prestataires}
-  value={prestataires.find(option => option.value === formData.Prestataire_fournisseur)}
+  value={prestataires
+    .filter(prestataire => prestataire.userid === userId)
+    .find(option => option.value === formData.Prestataire_fournisseur)}
   onChange={(selectedOption) => setFormData({ ...formData, Prestataire_fournisseur: selectedOption.value })}
   />
   );
 
   return (
     <div className="App">
+      <Navbar />
       <br/><br/>
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
-      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> 
-      <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button>
-      <Button onClick={() => setpdfShowModal(true)}><FontAwesomeIcon icon={faFilePdf} /> Exporter vers PDF</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
+      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button> <Button onClick={() => setpdfShowModal(true)}><FontAwesomeIcon icon={faFilePdf} /> Exporter vers PDF</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
       <Form.Control placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-search-input"/>
       <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
@@ -614,18 +603,19 @@ const handleAdd = () => {
       <Form.Group controlId="exampleForm.ControlInput4">
                 <Form.Label>Date et N de virement </Form.Label>
                 <Form.Control
-                  type="textarea"
-                  placeholder="Observations"
-                  value={facture.observations}
-                  onChange={(e) => setFacture({ ...facture, observations: e.target.value })}
+                  type="text"
+                  placeholder="Date et N° de virement"
+                  value={facture.dateVirement}
+                  onChange={(e) => setFacture({ ...facture, dateVirement: e.target.value })}
                 />
               </Form.Group>
               <Form.Group controlId="exampleForm.ControlInput3">
         <Form.Label> arrivée le  </Form.Label>
         <Form.Control
           type="date"
-          value={facture.Datefacture}
-          onChange={(e) => setFacture({ ...facture, Datefacture: e.target.value })}
+          placeholder="Arrivée le"
+          value={facture.arrivee}
+          onChange={(e) => setFacture({ ...facture, arrivee: e.target.value })}
         />
       </Form.Group>
 
@@ -738,7 +728,7 @@ const handleAdd = () => {
     </thead>
     <tbody>
         {searchResults
-      .filter(facture => facture.N >= startNume && facture.N <= endNume)
+      .filter(facture => facture.N >= startNume && facture.N <= endNume && facture.userId === userId)
       .map((facture) => (
         <tr key={facture._id}>
           <td>{generateInvoiceNumber(facture.N)}</td>
@@ -787,11 +777,7 @@ const handleAdd = () => {
   </thead>
   <tbody>
     {searchResults
-<<<<<<< HEAD
     .filter(facture => facture.userId === userId)
-=======
-    .filter(facture => facture.userId == userId)
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
     .map((facture, index) => (
       <tr key={facture._id}>
         <td>{generateInvoiceNumber(facture.N)}</td>
@@ -829,11 +815,9 @@ const handleAdd = () => {
 
       {showImage && (
         <div className="image-overlay" onClick={fermerImage}>
-<<<<<<< HEAD
+
           <img alt="Facture Affichée" />
-=======
-          <img src={imageSrc} alt="Facture Affichée" />
->>>>>>> 92b828e987a40dbb05043b2c39983b19d06473ef
+
         </div>
       )}
       <br/><br/>
