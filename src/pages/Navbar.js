@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -7,8 +7,11 @@ import './Navbar.css';
 import { IconContext } from 'react-icons';
 import { Button } from 'react-bootstrap';
 import { FaAngleDown } from 'react-icons/fa';
+import jwtDecode from 'jwt-decode';
+
 
 function Navbar() {
+
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
@@ -21,6 +24,55 @@ function Navbar() {
     backgroundColor: '#FC732E',
     border: '2px solid #FC732E',
   };
+  const [users, setUsers] = useState([]);
+  const [userId, setUserId] = useState( "");
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    // Fonction à exécuter au chargement de la page
+    (function () {
+    })();
+    // Récupérer le jeton JWT depuis le stockage local
+    const token = localStorage.getItem('token');
+    console.log("tokennnnnnnn",token)
+
+    if (token) {
+      // Déchiffrer le jeton JWT pour obtenir les informations de l'utilisateur
+      const decodedUser = jwtDecode(token);
+      console.log("user",decodedUser)
+
+      // Mettre à jour l'état avec les informations de l'utilisateur décodé
+      setUserId(decodedUser.userId);
+      console.log("userid",userId)
+    }
+  }, [],
+ 
+    useEffect(() => {
+        fetch('http://localhost:5000/api/users')
+          .then(response => response.json())
+          .then(data => {
+            setUsers(data);
+            console.log("userssssssssss",users)
+          })
+         
+          .catch(error => console.error('Error fetching factures:', error));
+      }, []),
+      
+      useEffect(() => {
+       
+        // Rechercher l'utilisateur correspondant lors du chargement du composant
+        for (const user of users) {
+          if (user._id === userId) {
+            console.log("trouvé")
+            setCurrentUser(user);
+            console.log("trouvé user ",currentUser)
+            break; // Une fois que l'utilisateur est trouvé, sortir de la boucle
+          }   
+          console.log("cuuuuuuuuuuuurent",currentUser)
+        }
+      }, [userId, users])
+    
+   
+      );
 
   return (
     <>
@@ -37,7 +89,7 @@ function Navbar() {
   <div className="flex-grow-1"></div>
   <div className="user-dropdown">
   <Button  style={customButtonStyle}>
-    <span className="user-name">Hadjer Bachasais</span>
+    <span className="user-name"> Name</span>
     <FaAngleDown className="dropdown-icon" />
   </Button>
   <div className="dropdown-content">

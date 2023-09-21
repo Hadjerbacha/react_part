@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './archive.css'; // Assurez-vous d'ajouter le fichier CSS approprié
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Utilisation d'icônes de flèches
 import Navbar from './Navbar';
 import { Button } from 'react-bootstrap';
+import Select from 'react-select';
+
 
 function ArchivePage() {
   const years = [
     2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000
   ];
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [factures, setFactures] = useState([]);
 
   const handleScroll = (scrollOffset) => {
     setScrollLeft(scrollLeft + scrollOffset);
   };
-
+  useEffect(() => {
+    fetch('http://localhost:5000/api/facture')
+      .then(response => response.json())
+      .then(data => setFactures(data))
+      .catch(error => console.error('Error fetching factures:', error));
+  }, []);
   const [selectedYear, setSelectedYear] = useState(null);
 
   // Supposons que vous ayez des données de facture pour chaque année
@@ -99,7 +107,9 @@ function ArchivePage() {
         </button>
         <div className="horizontal-scroll-container">
           <div className="horizontal-scroll" style={{ transform: `translateX(-${scrollLeft}px)` }}>
-            {years.map((year) => (
+            {years
+           
+            .map((year ) => (
               <button
                 key={year}
                 onClick={() => handleYearClick(year)}
@@ -125,12 +135,26 @@ function ArchivePage() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>N°</th>
+                <th>
+  <Select
+    options={years.map((year) => ({
+      label: year,  // La valeur à afficher dans l'option
+      value: year,  // La valeur à passer à la fonction handleYearClick
+    }))}
+    onChange={(selectedYear) => handleYearClick(selectedYear.value)}
+  />
+</th>
+
                   <th>Prestataire/Fournisseur</th>
                 </tr>
               </thead>
               <tbody>
-                {archiveData[selectedYear].map((facture) => (
+                 {factures
+                 .filter(facture => {
+                  const factureYear = new Date(facture.Datefacture).getFullYear();
+                  return factureYear === selectedYear;
+                })
+                .map((facture) => (
                   <tr key={facture.N}>
                     <td>{facture.N}</td>
                     <td>{facture.Prestataire_fournisseur}</td>

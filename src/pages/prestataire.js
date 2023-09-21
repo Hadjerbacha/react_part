@@ -2,18 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import jwtDecode from 'jwt-decode';
 
 function Prestataire() {
+  const [userid, setUserId] = useState("");
   const [prestataires, setPrestataires] = useState([]);
   const [formDataPrestataire, setFormDataPrestataire] = useState({
     Nom_pres: '',
     Region_pres: '',
+    userid: '',
   });
   const [showModal, setShowModal] = useState(false);
   const [selectedPrestataire, setSelectedPrestataire] = useState(null);
 
   useEffect(() => {
-    fetchPrestataires();
+    // Fonction à exécuter au chargement de la page
+    (function () {
+    })();
+    // Récupérer le jeton JWT depuis le stockage local
+    const token = localStorage.getItem('token');
+    console.log("tokennnnnnnn",token)
+
+    if (token) {
+      // Déchiffrer le jeton JWT pour obtenir les informations de l'utilisateur
+      const decodedUser = jwtDecode(token);
+      console.log("user",decodedUser)
+
+      // Mettre à jour l'état avec les informations de l'utilisateur décodé
+      setUserId(decodedUser.userId);
+    }
   }, []);
 
   const fetchPrestataires = async () => {
@@ -27,7 +44,13 @@ function Prestataire() {
 
   const handleAddPrestataire = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/prestataire', formDataPrestataire);
+      const prestataireData = {
+        ...formDataPrestataire,
+        userid: userid, 
+      };
+      console.log("user with userId",formDataPrestataire)
+
+      const response = await axios.post('http://localhost:5000/api/prestataire', prestataireData);
       console.log('Prestataire ajouté avec succès:', response.data);
       fetchPrestataires(); // Rafraîchir la liste des prestataires
       setFormDataPrestataire({ Nom_pres: '', Region_pres: '' }); // Réinitialiser le formulaire
@@ -65,9 +88,8 @@ function Prestataire() {
 
   return (
     <div className="App">
-      <br/><br/>
+      <br /><br />
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
-        {/* Formulaire pour ajouter un prestataire */}
         <div className="d-flex align-items-center">
           <Form.Group controlId="Nom_pres" className="me-3">
             <Form.Control
@@ -86,8 +108,7 @@ function Prestataire() {
             />
           </Form.Group>
           <Button onClick={handleAddPrestataire}><FaPlus /> Ajouter Prestataire</Button>
-        </div> <br/>
-        {/* Tableau des prestataires */}
+        </div> <br />
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -97,22 +118,22 @@ function Prestataire() {
             </tr>
           </thead>
           <tbody>
-            {prestataires.map(prestataire => (
-              <tr key={prestataire._id}>
-                <td>{prestataire.Nom_pres}</td>
-                <td>{prestataire.Region_pres}</td>
-                <td>
-                  <Button variant="success" onClick={() => handleEditPrestataire(prestataire)}><FaEdit /></Button>{' '}
-                  <Button variant="danger" onClick={() => handleDeletePrestataire(prestataire._id)}><FaTrash /></Button>
-                </td>
-              </tr>
-            ))}
+            {prestataires
+              .filter(prestataire => prestataire.userid === userid)
+              .map(prestataire => (
+                <tr key={prestataire._id}>
+                  <td>{prestataire.Nom_pres}</td>
+                  <td>{prestataire.Region_pres}</td>
+                  <td>
+                    <Button variant="success" onClick={() => handleEditPrestataire(prestataire)}><FaEdit /></Button>{' '}
+                    <Button variant="danger" onClick={() => handleDeletePrestataire(prestataire._id)}><FaTrash /></Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
-        <br/>
+        <br />
       </div>
-
-      {/* Modal pour modification */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifier Prestataire</Modal.Title>
