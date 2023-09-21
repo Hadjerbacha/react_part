@@ -2,22 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Modal, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import jwtDecode from 'jwt-decode';
+import Navbar from './Navbar';
 
-function PrestataireAdmin() {
+function Fournisseur() {
+  const [userid, setUserId] = useState("");
+  const [users, setUsers] = useState([]); // Liste des utilisateurs
   const [prestataires, setPrestataires] = useState([]);
   const [formDataPrestataire, setFormDataPrestataire] = useState({
     Nom_pres: '',
     Region_pres: '',
-    selectedUser: '', // Ajouter un champ selectedUser pour stocker le nom d'utilisateur sélectionné
+    selectedUserId: '', // ID de l'utilisateur sélectionné
   });
   const [showModal, setShowModal] = useState(false);
   const [selectedPrestataire, setSelectedPrestataire] = useState(null);
-  const [users, setUsers] = useState([]); // Stocker les utilisateurs disponibles
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    fetchUsers(); // Récupérer la liste des utilisateurs
     fetchPrestataires();
-    fetchUsers();
+    // Récupérer le jeton JWT depuis le stockage local
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      // Déchiffrer le jeton JWT pour obtenir les informations de l'utilisateur
+      const decodedUser = jwtDecode(token);
+
+      // Mettre à jour l'état avec les informations de l'utilisateur décodé
+      setUserId(decodedUser.userId);
+    }
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users');
+      setUsers(response.data); // Stocker la liste des utilisateurs
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
+    }
+  };
 
   const fetchPrestataires = async () => {
     try {
@@ -28,21 +51,22 @@ function PrestataireAdmin() {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/users');
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des utilisateurs:', error);
-    }
-  };
-
+  const [selectedUserName, setSelectedUserName] = useState("");
   const handleAddPrestataire = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/prestataire', formDataPrestataire);
+      const selectedUser = users.find(user => user._id === formDataPrestataire.selectedUserId);
+      const prestataireData = {
+        ...formDataPrestataire,
+        userid: formDataPrestataire.selectedUserId,
+      };
+
+      const response = await axios.post('http://localhost:5000/api/prestataire', prestataireData);
       console.log('Prestataire ajouté avec succès:', response.data);
       fetchPrestataires();
-      setFormDataPrestataire({ Nom_pres: '', Region_pres: '', selectedUser: '' });
+      setFormDataPrestataire({ Nom_pres: '', Region_pres: '', selectedUserId: '' });
+
+      // Mettez à jour le nom de l'utilisateur sélectionné
+      setSelectedUserName(`${selectedUser.firstName} ${selectedUser.lastName}`);
     } catch (error) {
       console.error('Erreur lors de l\'ajout de prestataire:', error);
     }
@@ -57,7 +81,7 @@ function PrestataireAdmin() {
     try {
       const response = await axios.put(`http://localhost:5000/api/prestataire/${selectedPrestataire._id}`, selectedPrestataire);
       console.log('Prestataire modifié avec succès:', response.data);
-      fetchPrestataires();
+      fetchPrestataires(); // Rafraîchir la liste des prestataires
       setShowModal(false);
       setSelectedPrestataire(null);
     } catch (error) {
@@ -69,7 +93,7 @@ function PrestataireAdmin() {
     try {
       const response = await axios.delete(`http://localhost:5000/api/prestataire/${id}`);
       console.log('Prestataire supprimé avec succès:', response.data);
-      fetchPrestataires();
+      fetchPrestataires(); // Rafraîchir la liste des prestataires
     } catch (error) {
       console.error('Erreur lors de la suppression de prestataire:', error);
     }
@@ -77,9 +101,26 @@ function PrestataireAdmin() {
 
   return (
     <div className="App">
-      <br/><br/>
+      <Navbar />
+      <br /><br />
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
         <div className="d-flex align-items-center">
+          {/* Ajouter un champ de sélection d'utilisateur */}
+          <Dropdown className="me-3">
+            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+              {formDataPrestataire.selectedUserId ? 'Utilisateur sélectionné' : 'Sélectionner un utilisateur'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {users.map(user => (
+                <Dropdown.Item
+                  key={user._id}
+                  onClick={() => setFormDataPrestataire({ ...formDataPrestataire, selectedUserId: user._id })}
+                >
+                  {user.firstName} {user.lastName}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           <Form.Group controlId="Nom_pres" className="me-3">
             <Form.Control
               type="text"
@@ -96,49 +137,47 @@ function PrestataireAdmin() {
               onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, Region_pres: e.target.value })}
             />
           </Form.Group>
-          <Form.Group controlId="selectedUser" className="me-3">
-            <Dropdown>
-              <Dropdown.Toggle variant="secondary">
-                {formDataPrestataire.selectedUser ? formDataPrestataire.selectedUser : 'Sélectionner un utilisateur'}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {users.map(user => (
-                  <Dropdown.Item
-                    key={user._id}
-                    onClick={() => setFormDataPrestataire({ ...formDataPrestataire, selectedUser: user.lastname })}
-                  >
-                    {user.lastname}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </Form.Group>
           <Button onClick={handleAddPrestataire}><FaPlus /> Ajouter Prestataire</Button>
-        </div> <br/>
+          <div style={{ marginLeft: '250px' }}></div> {/* Espace */}
+          <Form.Group controlId="searchTerm" className="custom-search-input">
+            <Form.Control
+              type="text"
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Form.Group>
+        </div> <br />
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Nom du prestataire</th>
-              <th>Région du prestataire</th>
-              <th>Utilisateur</th>
+              <th>Nom du prestataire/fournisseur</th>
+              <th>Région du prestataire/fournisseur</th>
+              <th>Nom de l'utilisateur</th> {/* Colonne du nom de l'utilisateur */}
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {prestataires.map(prestataire => (
-              <tr key={prestataire._id}>
-                <td>{prestataire.Nom_pres}</td>
-                <td>{prestataire.Region_pres}</td>
-                <td>{prestataire.selectedUser}</td>
-                <td>
-                  <Button variant="success" onClick={() => handleEditPrestataire(prestataire)}><FaEdit /></Button>{' '}
-                  <Button variant="danger" onClick={() => handleDeletePrestataire(prestataire._id)}><FaTrash /></Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+    {prestataires
+      .filter(prestataire => prestataire.userid === userid)
+      .filter(prestataire => {
+        const searchRegex = new RegExp(searchTerm, 'i');
+        return searchRegex.test(prestataire.Nom_pres) || searchRegex.test(prestataire.Region_pres);
+      })
+      .map(prestataire => (
+        <tr key={prestataire._id}>
+          <td>{prestataire.Nom_pres}</td>
+          <td>{prestataire.Region_pres}</td>
+          <td>{selectedUserName}</td> {/* Afficher le nom de l'utilisateur sélectionné */}
+          <td>
+            <Button variant="success" onClick={() => handleEditPrestataire(prestataire)}><FaEdit /></Button>{' '}
+            <Button variant="danger" onClick={() => handleDeletePrestataire(prestataire._id)}><FaTrash /></Button>
+          </td>
+        </tr>
+      ))}
+  </tbody>
         </Table>
-        <br/>
+        <br />
       </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -187,4 +226,4 @@ function PrestataireAdmin() {
   );
 }
 
-export default PrestataireAdmin;
+export default Fournisseur;

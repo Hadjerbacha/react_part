@@ -8,7 +8,7 @@
 }
 
 .login_form_container {
-	width: 900px;
+	width: 500px;
 	height: 500px;
 	display: flex;
 	border-radius: 10px;
@@ -22,9 +22,11 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background-color: white;
+	background-color: #f7f7f7;
 	border-top-left-radius: 10px;
 	border-bottom-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
 }
 
 .form_container {
@@ -44,7 +46,7 @@
 	width: 370px;
 	padding: 15px;
 	border-radius: 10px;
-	background-color: #edf5f3;
+	background-color: #dde2e0;
 	margin: 5px 0;
 	font-size: 14px;
 }
@@ -92,7 +94,11 @@
 }
 
 .green_btn {
-	background-color: #3bb19b;
+	background-color: #d77a2d;
 	color: white;
 	margin: 10px;
+}
+.img{
+	height : auto ;
+	width: 60%;
 }

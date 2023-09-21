@@ -15,16 +15,16 @@ const imprimer = (facture) => {
 
     // Ajouter du texte sur l'image
     pdf.setFontSize(12);
-    pdf.text(` ${facture.factureN}`,55, 52);
-    pdf.text(` ${facture.Prestataire_fournisseur}`, 155, 48);
+    pdf.text(` ${facture.factureN}`,55, 51);
+    pdf.text(` ${facture.Prestataire_fournisseur}`, 155, 47.5);
     pdf.text(` ${facture.observations}`, 43, 267);
-    pdf.text(` ${facture.montant}`, 175, 166);
+    pdf.text(` ${facture.montant}`, 168, 166);
     pdf.text(`005`, 160, 116);
     pdf.text(`X`, 103, 143);
     pdf.text(`X`, 94, 143);
-    pdf.text(` ${facture.montant}`, 175, 223);
-    pdf.text(` ${facture.montant}`, 99, 223);
-    pdf.text(` ${facture.montant}`, 99, 174);
+    pdf.text(` ${facture.montant}`, 168, 223);
+    pdf.text(` ${facture.montant}`, 91, 223);
+    pdf.text(` ${facture.montant}`, 91, 174);
     pdf.text(` ${facture.imputation}`, 70, 174);
 
     
@@ -35,9 +35,9 @@ const imprimer = (facture) => {
     const anneeAbregee = annee.slice(-2);
     const mois = dateParties[1];  // Récupérez le mois
     const jour = dateParties[2];  // Récupérez le jour
-    pdf.text(` ${mois}`, 112, 72);
-    pdf.text(` ${jour}`, 102, 72);
-    pdf.text(` ${anneeAbregee}`, 122, 72);
+    pdf.text(` ${mois}`, 112, 73);
+    pdf.text(` ${jour}`, 102, 73);
+    pdf.text(` ${anneeAbregee}`, 122, 73);
 
 
     

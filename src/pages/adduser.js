@@ -1,7 +1,7 @@
 import { Modal, Table, Button, Form } from 'react-bootstrap';
 import React, { useState, useEffect  } from 'react';
 import axios from "axios";
-import Header from "./header";
+import Navbar from './Navbar';
 import {  faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -122,7 +122,7 @@ const AddUser = () => {
                      .catch(error => console.error('Erreur lors de la mise à jour de user:', error));
                    };
     return (
-        <><Header /><>
+        <><Navbar /><>
             <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
                 <Modal.Header closeButton>
                     <Modal.Title>modifierla l'utilisateur</Modal.Title>
