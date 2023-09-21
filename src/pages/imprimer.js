@@ -1,9 +1,9 @@
-import React from 'react';
+
 import jsPDF from 'jspdf';
 
 const imprimer = (facture) => {
   const pdf = new jsPDF();
-const num= facture.N
+
   const img = new Image();
   img.src = '/tele.jpg'; // Chemin vers votre image
   img.onload = () => {

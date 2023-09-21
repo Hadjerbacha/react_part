@@ -4,6 +4,7 @@ import handleExportToExcel from './excel';
 import Select from 'react-select';
 import handleDelete from './delete_fac';
 import imprimer from './imprimer';
+import Navbar from './Navbar';
 import jwtDecode from 'jwt-decode';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,10 +20,12 @@ function TablePage() {
   const [userId, setUserId] = useState( "");
   const [showModal, setShowModal] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+ // const [showSearchBar, setShowSearchBar] = useState(false);
   const [factures, setFactures] = useState([]);
   const [showImage, setShowImage] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
+ // const [imageSrc, setImageSrc] = useState('');
+
+
   const [facture, setFacture] = useState({
     _id:'',
     N: '',
@@ -40,6 +43,7 @@ function TablePage() {
     arrivee: '',
 
   });
+
   const [formData, setFormData] = useState({
     N: '',
     Prestataire_fournisseur: '',
@@ -59,12 +63,19 @@ function TablePage() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+
+  
+  /*const afficherImage = (event) => {
+
   const afficherImage = (event) => {
+
     event.preventDefault();
     const imageSrc = event.target.src;
     setImageSrc(imageSrc);
     setShowImage(true);
-  };
+<<<<<<< HEADf
+  };*/
+
   
 
   const fermerImage = () => {
@@ -133,6 +144,7 @@ function TablePage() {
 
   const handleCloseModalEdit = () => { setShowModalEdit(false);};
   
+
   const handleFileChange = async (e) => {
     console.log("apl change file ")
     const selectedFile = e.target.files[0];
@@ -179,6 +191,9 @@ function TablePage() {
     .catch(error => console.error('Erreur lors de la mise à jour de la facture:', error));
   };
 
+
+  /*const handleAdd = () => {
+
   const handleAdd = () => {
     formData.userId=userId
     fetch('http://localhost:5000/api/facture', {
@@ -196,7 +211,47 @@ function TablePage() {
       window.location.reload();
     })
     .catch(error => console.error('Erreur lors de l\'ajout de la facture:', error));
-  };
+  };*/
+  // Créez une fonction pour vérifier si le numéro de facture existe déjà pour le prestataire/fournisseur sélectionné
+const isFactureNUnique = (factureN, prestataire) => {
+  // Filtrer la liste des factures pour trouver celles qui ont le même numéro de facture
+  const facturesAvecMemeFactureN = factures.filter(
+    (facture) =>
+      facture.factureN === factureN &&
+      facture.Prestataire_fournisseur === prestataire
+  );
+
+  // Si aucune facture avec le même numéro de facture n'est trouvée, le numéro de facture est unique
+  return facturesAvecMemeFactureN.length === 0;
+};
+const [error, setError] = useState(null);
+const handleAdd = () => {
+  // Vérifiez d'abord si le numéro de facture est unique pour le prestataire sélectionné
+  const isUnique = isFactureNUnique(formData.factureN, formData.Prestataire_fournisseur);
+
+  if (isUnique) {
+    // Si le numéro de facture est unique, vous pouvez ajouter la facture
+    formData.userId=userId
+    fetch('http://localhost:5000/api/facture', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Une fois la facture ajoutée avec succès, vous pouvez rafraîchir la liste des factures pour afficher la nouvelle facture
+      console.log('Facture ajoutée avec succès:', data);
+      // Rafraîchir la liste des factures en rechargeant la page (ou en utilisant un autre moyen pour mettre à jour les données)
+      window.location.reload();
+    })
+    .catch(error => console.error('Erreur lors de l\'ajout de la facture:', error));
+  } else {
+    // Si le numéro de facture n'est pas unique, mettez à jour l'état d'erreur
+    setError('Le numéro de facture existe déjà pour ce prestataire/fournisseur.');
+  }
+};
   
 
   /*const [showEditModal, setShowEditModal] = useState(false);
@@ -317,7 +372,8 @@ function TablePage() {
   const fetchPrestataires = async () => {
   try {
   const response = await axios.get('http://localhost:5000/api/prestataires');
-  setPrestataires(response.data.map(prestataire => ({
+  setPrestataires(response.data
+    .map(prestataire => ({
   value: prestataire.Nom_pres,
   label: prestataire.Nom_pres,
   })
@@ -329,18 +385,19 @@ function TablePage() {
   
   const MyComponent = () => (
   <Select options={prestataires}
-  value={prestataires.find(option => option.value === formData.Prestataire_fournisseur)}
+  value={prestataires
+    .filter(prestataire => prestataire.userid === userId)
+    .find(option => option.value === formData.Prestataire_fournisseur)}
   onChange={(selectedOption) => setFormData({ ...formData, Prestataire_fournisseur: selectedOption.value })}
   />
   );
 
   return (
     <div className="App">
+      <Navbar />
       <br/><br/>
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
-      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> 
-      <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button>
-      <Button onClick={() => setpdfShowModal(true)}><FontAwesomeIcon icon={faFilePdf} /> Exporter vers PDF</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
+      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button> <Button onClick={() => setpdfShowModal(true)}><FontAwesomeIcon icon={faFilePdf} /> Exporter vers PDF</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
       <Form.Control placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-search-input"/>
       <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
@@ -422,6 +479,10 @@ function TablePage() {
               </Form.Group>
               
           </Form>
+          <br/>
+          {error && (
+            <div className="alert alert-danger">{error}</div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>Fermer</Button>
@@ -542,18 +603,19 @@ function TablePage() {
       <Form.Group controlId="exampleForm.ControlInput4">
                 <Form.Label>Date et N de virement </Form.Label>
                 <Form.Control
-                  type="textarea"
-                  placeholder="Observations"
-                  value={facture.observations}
-                  onChange={(e) => setFacture({ ...facture, observations: e.target.value })}
+                  type="text"
+                  placeholder="Date et N° de virement"
+                  value={facture.dateVirement}
+                  onChange={(e) => setFacture({ ...facture, dateVirement: e.target.value })}
                 />
               </Form.Group>
               <Form.Group controlId="exampleForm.ControlInput3">
         <Form.Label> arrivée le  </Form.Label>
         <Form.Control
           type="date"
-          value={facture.Datefacture}
-          onChange={(e) => setFacture({ ...facture, Datefacture: e.target.value })}
+          placeholder="Arrivée le"
+          value={facture.arrivee}
+          onChange={(e) => setFacture({ ...facture, arrivee: e.target.value })}
         />
       </Form.Group>
 
@@ -666,7 +728,7 @@ function TablePage() {
     </thead>
     <tbody>
         {searchResults
-      .filter(facture => facture.N >= startNume && facture.N <= endNume)
+      .filter(facture => facture.N >= startNume && facture.N <= endNume && facture.userId === userId)
       .map((facture) => (
         <tr key={facture._id}>
           <td>{generateInvoiceNumber(facture.N)}</td>
@@ -715,7 +777,7 @@ function TablePage() {
   </thead>
   <tbody>
     {searchResults
-    .filter(facture => facture.userId == userId)
+    .filter(facture => facture.userId === userId)
     .map((facture, index) => (
       <tr key={facture._id}>
         <td>{generateInvoiceNumber(facture.N)}</td>
@@ -753,7 +815,9 @@ function TablePage() {
 
       {showImage && (
         <div className="image-overlay" onClick={fermerImage}>
-          <img src={imageSrc} alt="Facture Affichée" />
+
+          <img alt="Facture Affichée" />
+
         </div>
       )}
       <br/><br/>

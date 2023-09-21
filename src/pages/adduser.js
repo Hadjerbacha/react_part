@@ -1,8 +1,8 @@
 import { Modal, Table, Button, Form } from 'react-bootstrap';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from "axios";
 import Header from "./header";
-import {  faTrash, faFilePdf, faPrint, faFileExcel, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {  faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
  // Assurez-vous d'importer le fichier de styles approprié

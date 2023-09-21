@@ -1,6 +1,7 @@
 import React from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
+import * as IoIcons from 'react-icons/io';
 
 export const SidebarData = [
   {
@@ -11,26 +12,26 @@ export const SidebarData = [
   },
   {
     title: 'Ajouter Prestataire',
-    path: '/prestataire',
-    icon: <FaIcons.FaPlus />,
+    path: '/reports',
+    icon: <IoIcons.IoIosPaper />,
     cName: 'nav-text'
   },
   {
     title: 'Consulter utilisateurs',
-    path: '/consulte',
-    icon: <FaIcons.FaUsers />,
+    path: '/products',
+    icon: <FaIcons.FaCartPlus />,
     cName: 'nav-text'
   },
   {
     title: 'Tableau de bord',
-    path: '/tableau_bord',
-    icon: <FaIcons.FaChartLine />,
+    path: '/team',
+    icon: <IoIcons.IoMdPeople />,
     cName: 'nav-text'
   },
   {
     title: 'Archive',
-    path: '/archive',
-    icon: <FaIcons.FaArchive />,
+    path: '/messages',
+    icon: <FaIcons.FaEnvelopeOpenText />,
     cName: 'nav-text'
   }
 ];
