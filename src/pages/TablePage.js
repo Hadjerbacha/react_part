@@ -174,8 +174,8 @@ function TablePage() {
     const selectedFile = e.target.files[0];
     setFacture({ ...facture, fichier: e.target.value });
   };*/
+
   const handleEdit = () => {
-   
     fetch(`http://localhost:5000/api/facture/${facture._id}`, {
       method: 'PUT',
       headers: {
@@ -183,12 +183,18 @@ function TablePage() {
       },
       body: JSON.stringify(facture),
     })
-    .then(response => response.json())
-    .then(data => {
-      // Mettre à jour l'affichage de la facture mise à jour dans la liste des factures
-      console.log('Facture mise à jour:', data);
-    })
-    .catch(error => console.error('Erreur lors de la mise à jour de la facture:', error));
+      .then((response) => response.json())
+      .then((data) => {
+        // Mettre à jour l'affichage de la facture mise à jour dans la liste des factures
+        console.log('Facture mise à jour:', data);
+        // Mettez à jour l'état de la facture avec les nouvelles données si nécessaire
+        // setFacture(data); // Si le serveur renvoie les données mises à jour
+        // Fermez le modèle de modification après la mise à jour réussie
+        window.location.reload();
+      })
+      .catch((error) =>
+        console.error('Erreur lors de la mise à jour de la facture:', error)
+      );
   };
 
 
@@ -362,35 +368,36 @@ const handleAdd = () => {
   const [endNume, setEndNume] = useState('');
 
   
-
   const [prestataires, setPrestataires] = useState([]);
 
-  useEffect(() => {
-  fetchPrestataires();
-  }, []);
-  
+useEffect(() => {
   const fetchPrestataires = async () => {
-  try {
-  const response = await axios.get('http://localhost:5000/api/prestataires');
-  setPrestataires(response.data
-    .map(prestataire => ({
-  value: prestataire.Nom_pres,
-  label: prestataire.Nom_pres,
-  })
-  )) ;
-  } catch (error) {
-  console.error('Erreur lors de la récupération des prestataires:', error);
-  }
+    try {
+      const response = await axios.get('http://localhost:5000/api/prestataires');
+      setPrestataires(
+        response.data
+          .filter((prestataire) => prestataire.userid === userId)
+          .map((prestataire) => ({
+            value: prestataire.Nom_pres,
+            label: prestataire.Nom_pres,
+          }))
+      );
+    } catch (error) {
+      console.error('Erreur lors de la récupération des prestataires:', error);
+    }
   };
+
+  fetchPrestataires();
+}, [userId]); 
   
   const MyComponent = () => (
-  <Select options={prestataires}
-  value={prestataires
-    .filter(prestataire => prestataire.userid === userId)
-    .find(option => option.value === formData.Prestataire_fournisseur)}
-  onChange={(selectedOption) => setFormData({ ...formData, Prestataire_fournisseur: selectedOption.value })}
-  />
+    <Select
+      options={prestataires}
+      value={prestataires.find((option) => option.value === formData.Prestataire_fournisseur)}
+      onChange={(selectedOption) => setFormData({ ...formData, Prestataire_fournisseur: selectedOption.value })}
+    />
   );
+  
 
   return (
     <div className="App">
@@ -755,9 +762,10 @@ const handleAdd = () => {
       </Modal>
       <br/><br/>
      
-      <Table striped bordered hover>
+      <Table striped bordered hover style={{ width: '100%', margin: '0 auto' }}>
   <thead>
     <tr>
+      <th></th>
       <th>N°</th>
       <th>Prestataire/Fournisseur</th>
       <th>Facture N°</th>
@@ -772,7 +780,6 @@ const handleAdd = () => {
       <th>Date et N° de virement</th>
       <th>Arrivée le</th>
       <th>Actions</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -780,6 +787,13 @@ const handleAdd = () => {
     .filter(facture => facture.userId === userId)
     .map((facture, index) => (
       <tr key={facture._id}>
+        <td>
+          <input
+            type="radio"
+            checked={checkboxState[index] || false}
+            onChange={() => handleChange(facture, index)}
+          />
+        </td>
         <td>{generateInvoiceNumber(facture.N)}</td>
         <td>{facture.Prestataire_fournisseur}</td>
         <td>{facture.factureN}</td>
@@ -800,13 +814,6 @@ const handleAdd = () => {
           <Button onClick={() => handleShowModalEdit(facture)} className="btn btn-warning">
             <FontAwesomeIcon icon={faPencilAlt} />
           </Button>
-        </td>
-        <td>
-          <input
-            type="radio"
-            checked={checkboxState[index] || false}
-            onChange={() => handleChange(facture, index)}
-          />
         </td>
       </tr>
     ))}

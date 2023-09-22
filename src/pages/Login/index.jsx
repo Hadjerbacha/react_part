@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 
 const Login = () => {
@@ -34,7 +33,7 @@ const Login = () => {
 			<div className={styles.login_form_container}>
 				<div className={styles.left}>
 					<form className={styles.form_container} onSubmit={handleSubmit}>
-						<h1>Login to Your Account</h1>
+						<img className={styles.img} src="facture5.png" alt="logoapp"/><br/><br/>
 						<input
 							type="email"
 							placeholder="Email"
@@ -46,26 +45,18 @@ const Login = () => {
 						/>
 						<input
 							type="password"
-							placeholder="Password"
+							placeholder="Mot de passe"
 							name="password"
 							onChange={handleChange}
 							value={data.password}
 							required
 							className={styles.input}
-						/>
+						/><br/>
 						{error && <div className={styles.error_msg}>{error}</div>}
 						<button type="submit" className={styles.green_btn}>
 							Connecter
 						</button>
 					</form>
-				</div>
-				<div className={styles.right}>
-					<h1>New Here ?</h1>
-					<Link to="/signup">
-						<button type="button" className={styles.white_btn}>
-							Sing Up
-						</button>
-					</Link>
 				</div>
 			</div>
 		</div>
