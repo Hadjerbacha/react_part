@@ -1,154 +1,114 @@
-import React, { useState } from 'react';
-import './archive.css'; // Assurez-vous d'ajouter le fichier CSS approprié
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Utilisation d'icônes de flèches
+import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import { Button } from 'react-bootstrap';
+import Select from 'react-select';
 
 function ArchivePage() {
-  const years = [
-    2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000
-  ];
+  const years = Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => new Date().getFullYear() - i);
   const [scrollLeft, setScrollLeft] = useState(0);
-
-  const handleScroll = (scrollOffset) => {
-    setScrollLeft(scrollLeft + scrollOffset);
-  };
-
+  const [factures, setFactures] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
-
-  // Supposons que vous ayez des données de facture pour chaque année
-  const archiveData = {
-    2025: [],
-    2024: [],
-    2023: [],
-    2022: [],
-    2021: [],
-    2020: [],
-    2019: [],
-    2018: [],
-    2017: [],
-    2016: [],
-    2015: [],
-    2014: [],
-    2013: [],
-    2012: [],
-    2011: [],
-    2010: [],
-    2009: [],
-    2008: [],
-    2007: [],
-    2006: [],
-    2005: [],
-    2004: [],
-    2003: [],
-    2002: [],
-    2001: [],
-    2000: []
-  };
 
   const handleYearClick = (year) => {
     setSelectedYear(year);
   };
 
-  const handleDownloadClick = () => {
-    if (selectedYear) {
-      // Obtenez les données de facture de l'année sélectionnée
-      const selectedYearData = archiveData[selectedYear];
-
-      // Créez un tableau CSV en concaténant toutes les lignes de données
-      const csvData = selectedYearData.map((facture) => {
-        // Utilisez des tabulations pour séparer les champs au lieu de virgules
-        return `${facture.N}\t${facture.Prestataire_fournisseur}\t...`; // Ajoutez d'autres champs ici
-      });
-
-      // Ajoutez un en-tête CSV pour les colonnes (remplacez par vos en-têtes de colonne réels)
-      const csvHeader = 'N°\tPrestataire/Fournisseur\t...'; // Ajoutez d'autres en-têtes ici
-
-      // Combiner l'en-tête et les données en une seule chaîne CSV
-      const csvContent = `${csvHeader}\n${csvData.join('\n')}`;
-
-      // Créez un objet Blob à partir du contenu CSV
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-
-      // Générez un URL pour le Blob
-      const csvURL = URL.createObjectURL(blob);
-
-      // Créez un élément d'ancre pour le téléchargement du fichier CSV
-      const downloadLink = document.createElement('a');
-      downloadLink.href = csvURL;
-      downloadLink.download = `factures_${selectedYear}.csv`; // Nom du fichier CSV
-
-      // Simulez un clic sur le lien pour déclencher le téléchargement
-      downloadLink.click();
-
-      // Libérez la ressource URL
-      URL.revokeObjectURL(csvURL);
-    }
+  const handleUserButtonClick = (userId) => {
+    setSelectedUserId(userId);
   };
+
+  const handleDownloadClick = () => {
+    if (!selectedYear) {
+      // L'année n'est pas sélectionnée, vous pouvez afficher un message d'erreur ici.
+      return;
+    }
+
+    // ... Votre logique de téléchargement CSV
+  };
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        console.log("uuuuusrs", data);
+      })
+      .catch(error => console.error('Error fetching users:', error));
+  }, []);
+  
+  useEffect(() => {
+    fetch('http://localhost:5000/api/facture')
+      .then(response => response.json())
+      .then(data => setFactures(data))
+      .catch(error => console.error('Error fetching factures:', error));
+  }, []);
 
   return (
     <div>
       <Navbar />
-      <div className="archive-container">
-        <button
-          className={`scroll-button left ${scrollLeft === 0 ? 'disabled' : ''}`}
-          onClick={() => handleScroll(-100)}
-          disabled={scrollLeft === 0}
-        >
-          <FaChevronLeft />
-        </button>
-        <div className="horizontal-scroll-container">
-          <div className="horizontal-scroll" style={{ transform: `translateX(-${scrollLeft}px)` }}>
-            {years.map((year) => (
-              <button
-                key={year}
-                onClick={() => handleYearClick(year)}
-                className={`year-button ${year === selectedYear ? 'active' : ''}`}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
-        </div>
-        <button
-          className={`scroll-button right ${scrollLeft === (years.length - 1) * 100 ? 'disabled' : ''}`}
-          onClick={() => handleScroll(100)}
-          disabled={scrollLeft === (years.length - 1) * 100}
-        >
-          <FaChevronRight />
-        </button>
-      </div>
+      <br /><br />
       <div className="content">
-        {selectedYear && archiveData[selectedYear] && (
-          <div>
-            <h3>Année {selectedYear}</h3>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>N°</th>
-                  <th>Prestataire/Fournisseur</th>
-                </tr>
-              </thead>
-              <tbody>
-                {archiveData[selectedYear].map((facture) => (
-                  <tr key={facture.N}>
-                    <td>{facture.N}</td>
-                    <td>{facture.Prestataire_fournisseur}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <Button variant="success" onClick={handleDownloadClick}>
-              Télécharger
-            </Button>
-          </div>
-        )}
+        <div>
+      
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ margin: '0 10px ' }}></div> 
+  <Select
+    placeholder="Sélectionner l'année"
+    options={years.map((year) => ({
+      label: year,
+      value: year,
+    }))}
+    onChange={(selectedYear) => handleYearClick(selectedYear.value)}
+  />
+  <div style={{ margin: '0 10px  ' }}></div> {/* Espace horizontal de 10 pixels */}
+  <Select
+    placeholder="Sélectionner l'utilisateur"
+    options={users.map((user) => ({
+      label: user.firstName,
+      value: user._id,
+    }))}
+    onChange={(selectedUser) => handleUserButtonClick(selectedUser.value)}
+  />
+</div>
+
+          <table className="table">
+            <thead>
+              <tr>
+                <th>
+                 N de facture 
+                </th>
+                <th>
+                Prestataire
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {factures
+  .filter((facture) => {
+    const factureYear = new Date(facture.Datefacture).getFullYear();
+    return (selectedYear === null || factureYear === selectedYear) && (selectedUserId === null || facture.userId === selectedUserId);
+  })
+  .map((facture) => (
+    <tr key={facture.N}>
+      <td>{facture.N}</td>
+      <td>{facture.Prestataire_fournisseur}</td>
+    </tr>
+  ))}
+            </tbody>
+          </table>
+          <Button variant="success" onClick={handleDownloadClick}>
+            Télécharger
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 
 export default ArchivePage;
+
 
 /*import React, { useState } from 'react';
 import './archive.css'; // Assurez-vous d'ajouter le fichier CSS approprié

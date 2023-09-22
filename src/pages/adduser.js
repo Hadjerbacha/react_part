@@ -2,7 +2,7 @@ import { Modal, Table, Button, Form } from 'react-bootstrap';
 import React, { useState, useEffect  } from 'react';
 import axios from "axios";
 import Navbar from './Navbar';
-import {  faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
  // Assurez-vous d'importer le fichier de styles approprié
@@ -122,7 +122,8 @@ const AddUser = () => {
                      .catch(error => console.error('Erreur lors de la mise à jour de user:', error));
                    };
     return (
-        <><Navbar /><>
+        <>   <Navbar />
+        <br /><br /><>
             <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
                 <Modal.Header closeButton>
                     <Modal.Title>modifierla l'utilisateur</Modal.Title>
@@ -178,9 +179,10 @@ const AddUser = () => {
                     <Button variant="primary" onClick={handleEdit}>confirmer</Button>
                 </Modal.Footer>
             </Modal><>
-                <Button variant="dark" className="nav-button" onClick={() => handleShowModal()}>
-                    Ajouter un utilisateur
+                <Button    style={{ marginLeft: '15px' }} className="nav-button" onClick={() => handleShowModal()}>
+                <FontAwesomeIcon icon={faPlus} /> Ajouter un utilisateur
                 </Button><>
+                <br /><br />
                     <Table>
                         <thead>
                             <tr>

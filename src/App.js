@@ -4,9 +4,11 @@ import Tablepage from "./pages/TablePage";
 import Prestataire from "./pages/prestataire";
 import Singup from "./pages/Singup";
 import Adduser from "./pages/adduser";
+import ArchivePage from "./pages/archive";
 import Archive from "./pages/archive";
 import Consulte from "./pages/consulte";
 import Statistiques from "./pages/tableau_bord";
+import ArchiveUser from "./pages/archiveUser";
 import Fournisseur from "./pages/fournisseur";
 function App() {
 	const user = localStorage.getItem("token");
@@ -19,6 +21,7 @@ function App() {
 			<Route path="/singup" exact element={<Singup />} />
 			<Route path="/adduser" exact element={<Adduser />} />
 			<Route path="/archive" exact element={<Archive />} />
+			<Route path="/archiveUser" exact element={<ArchiveUser />} />
 			<Route path="/consulte" exact element={<Consulte />} />
 			<Route path="/fournisseur" exact element={<Fournisseur />} />
 			<Route path="/tableau_de_bord" exact element={<Statistiques />} />
