@@ -1,7 +1,7 @@
 import React from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-
+/*
 export const SidebarData = [
   {
     title: 'Accueil',
@@ -12,6 +12,12 @@ export const SidebarData = [
   {
     title: 'Ajouter Prestataire',
     path: '/prestataire',
+    icon: <FaIcons.FaPlus />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Ajouter utilisateur',
+    path: '/adduser',
     icon: <FaIcons.FaPlus />,
     cName: 'nav-text'
   },
@@ -29,8 +35,9 @@ export const SidebarData = [
   },
   {
     title: 'Archive',
-    path: '/archive',
+    path: user.role === 'admin' ? '/archive' : '/archiveUser',
     icon: <FaIcons.FaArchive />,
     cName: 'nav-text'
   }
 ];
+*/
