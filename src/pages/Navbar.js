@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { SidebarData } from './SidebarData';
 import './Navbar.css';
 import { IconContext } from 'react-icons';
 import { Button } from 'react-bootstrap';
@@ -66,26 +65,20 @@ const Navbar = () => {
   let sidebarItems = [
     {
       title: 'Accueil',
-      path: '/',
+      path: currentUser?.role === 'admin' ? '/consulte' : '/',
       icon: <AiIcons.AiFillHome />,
       cName: 'nav-text'
     },
     {
       title: 'Ajouter Prestataire',
-      path: '/prestataire',
+      path: currentUser?.role === 'admin' ? '/fournisseur' : '/prestataire',
       icon: <FaIcons.FaPlus />,
       cName: 'nav-text'
     },
     {
-      title: 'Ajouter utilisateur',
-      path: '/adduser',
-      icon: <FaIcons.FaPlus />,
-      cName: 'nav-text'
-    },
-    {
-      title: 'Consulter utilisateurs',
-      path: '/consulte',
-      icon: <FaIcons.FaUsers />,
+      title: currentUser?.role === 'admin' ? 'Ajouter utilisateur' : 'Consulter utilisateurs',
+      path: currentUser?.role === 'admin' ? '/adduser' : '/consulte',
+      icon: currentUser?.role === 'admin' ? <FaIcons.FaUserPlus /> : <FaIcons.FaUsers />,
       cName: 'nav-text'
     },
     {
@@ -132,12 +125,10 @@ const Navbar = () => {
   <div className="flex-grow-1"></div>
   <div className="user-dropdown">
   <Button  style={customButtonStyle}>
-  <span className="user-name">{currentUser?.firstName} {currentUser?.lastName}</span>
+  <span className="user-name">{currentUser?.lastName} {currentUser?.firstName}</span>
     <FaAngleDown className="dropdown-icon" />
   </Button>
   <div className="dropdown-content">
-    <Button variant="disabled">Profil</Button>
-    <hr />
     <Button variant="disabled" onClick={handleLogout}>Déconnexion</Button>
   </div>
 </div>
