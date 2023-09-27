@@ -34,6 +34,7 @@ function Fournisseur() {
     }
   }, []);
 
+
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/users');
@@ -42,6 +43,7 @@ function Fournisseur() {
       console.error('Erreur lors de la récupération des utilisateurs:', error);
     }
   };
+  
 
   const fetchPrestataires = async () => {
     try {
@@ -124,6 +126,7 @@ function Fournisseur() {
               ))}
             </Dropdown.Menu>
           </Dropdown>
+          
           <Form.Group controlId="Nom_pres" className="me-3">
             <Form.Control
               type="text"
@@ -141,10 +144,10 @@ function Fournisseur() {
             />
           </Form.Group>
           <Button onClick={handleAddPrestataire}><FaPlus /> Ajouter Prestataire</Button>
-          <div style={{ marginLeft: '250px' }}></div> {/* Espace */}
+           <div style={{ marginLeft: '35px' }}></div> {/*Espace */}
           <Form.Group controlId="searchTerm" className="custom-search-input">
             <Form.Control
-              type="text"
+              type="text" 
               placeholder="Rechercher..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -206,14 +209,22 @@ function Fournisseur() {
             />
           </Form.Group>
           <Form.Group controlId="selectedUser">
-            <Form.Label>Utilisateur</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Utilisateur"
-              value={selectedPrestataire?.selectedUser || ''}
-              onChange={(e) => setSelectedPrestataire({ ...selectedPrestataire, selectedUser: e.target.value })}
-            />
-          </Form.Group>
+  <Form.Label>Utilisateur</Form.Label>
+  <Form.Control
+    as="select"
+    value={selectedPrestataire?.userid || ''}
+    onChange={(e) => setSelectedPrestataire({ ...selectedPrestataire, userid: e.target.value })}
+  >
+    {users
+      .filter(user => user.role !== 'admin')
+      .map(user => (
+        <option key={user._id} value={user._id}>
+          {user.firstName} {user.lastName}
+        </option>
+      ))}
+  </Form.Control>
+</Form.Group>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>

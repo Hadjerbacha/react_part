@@ -401,11 +401,69 @@ function Consulte() {
           ))}
         </div>
         <br/>
-        {selectedUserId && (
+        {selectedUserId === null ? (
           <div>
+            {/* Afficher le tableau de toutes les factures (à l'exception de l'utilisateur connecté) */}
+            {
+              factures
+              .filter(facture => facture.userId !== userid)
+              .length > 0 ? (
+              <Table striped bordered hover>
+              <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Prestataire/Fournisseur</th>
+                    <th>Facture N°</th>
+                    <th>Date Facture</th>
+                    <th>Montant</th>
+                    <th>Bon de Commande ou Contrat N°</th>
+                    <th>Transmis à DPT le</th>
+                    <th>Transmis à DFC le</th>
+                    <th>Observations</th>
+                    <th>Imputation</th>
+                    <th>Fichier</th>
+                    <th>Date et N° de virement</th>
+                    <th>Arrivée le</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {factures
+                  .filter(facture => facture.userId !== userid)
+                  .map((facture, index) => (
+                    <tr key={facture._id}>
+                      <td>{facture.N}</td>
+                      <td>{facture.Prestataire_fournisseur}</td>
+                      <td>{facture.factureN}</td>
+                      <td>{facture.Datefacture}</td>
+                      <td>{facture.montant}</td>
+                      <td>{facture.bonCommande}</td>
+                      <td>{facture.transmisDPT}</td>
+                      <td>{facture.transmisDFC}</td>
+                      <td>{facture.observations}</td>
+                      <td>{facture.imputation}</td>
+                      <td>{facture.fichier}</td>
+                      <td>{facture.dateVirement}</td>
+                      <td>{facture.arrivee}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <Table striped bordered hover >
+                <tbody>
+                  <tr>
+                   <td colSpan="13">Aucune facture disponible.</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
+          </div>
+        ) : (
+          <div>
+            {/* Afficher le tableau des factures pour l'utilisateur sélectionné */}
             {facturesParUtilisateur[selectedUserId] && facturesParUtilisateur[selectedUserId].length > 0 ? (
               <Table striped bordered hover>
-                <thead>
+              <thead>
                   <tr>
                     <th>N°</th>
                     <th>Prestataire/Fournisseur</th>
@@ -443,10 +501,10 @@ function Consulte() {
                 </tbody>
               </Table>
             ) : (
-              <Table striped bordered hover>
+              <Table striped bordered hover >
                 <tbody>
                   <tr>
-                    <td>Aucune facture pour cet utilisateur.</td>
+                    <td colSpan="13">Aucune facture pour cet utilisateur.</td>
                   </tr>
                 </tbody>
               </Table>

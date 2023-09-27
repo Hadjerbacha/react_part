@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import jwtDecode from 'jwt-decode';
+import ExcelJS from 'exceljs';
 
 
 function ArchiveUser() {
@@ -35,14 +36,90 @@ function ArchiveUser() {
       setUserId(decodedUser.userId);
     }
   }, []);
-  const handleDownloadClick = () => {
+  const [showErroorModal, setShowErroorModal] = useState(false);
+  const [erroorMessage, setErroorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const exportToExcel = () => {
     if (!selectedYear) {
       // L'année n'est pas sélectionnée, vous pouvez afficher un message d'erreur ici.
+      setErroorMessage("L'année n'est pas sélectionnée");
+      setShowErroorModal(true);
       return;
     }
-
-    // ... Votre logique de téléchargement CSV
+  
+    // Filtrer les factures en fonction de l'année sélectionnée
+    const filteredFactures = factures.filter((facture) => {
+      const factureYear = new Date(facture.Datefacture).getFullYear();
+      return factureYear === selectedYear;
+    });
+  
+    if (filteredFactures.length === 0) {
+      // Aucune facture pour cette année, affichez un message d'erreur si nécessaire.
+      setErrorMessage(`Aucune facture trouvée pour l'année ${selectedYear}.`);
+      setShowErrorModal(true);
+      return;
+    }
+  
+    // Créez un nouveau classeur Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Factures');
+  
+    // Définissez les en-têtes de colonne
+    worksheet.columns = [
+      { header: 'N°', key: 'N', width: 10 },
+      { header: 'Prestataire/Fournisseur', key: 'Prestataire_fournisseur', width: 30 },
+      { header: 'Facture N°', key: 'factureN', width: 15 },
+      { header: 'Date Facture', key: 'Datefacture', width: 15 },
+      { header: 'Montant', key: 'montant', width: 15 },
+      { header: 'Bon de Commande ou Contrat N°', key: 'bonCommande', width: 30 },
+      { header: 'Transmis à DPT le', key: 'transmisDPT', width: 20 },
+      { header: 'Transmis à DFC le', key: 'transmisDFC', width: 20 },
+      { header: 'Observations', key: 'observations', width: 15 },
+      { header: 'Imputation', key: 'imputation', width: 15 },
+      { header: 'Fichier', key: 'fichier', width: 15 },
+      { header: 'Date et N° de virement', key: 'dateVirement', width: 30 },
+      { header: 'Arrivée le', key: 'arrivee', width: 15 },
+    ];
+  
+    // Ajoutez les données à la feuille de calcul
+    filteredFactures.forEach((facture) => {
+      worksheet.addRow({
+        N: facture.N,
+        Prestataire_fournisseur: facture.Prestataire_fournisseur,
+        factureN: facture.factureN,
+        Datefacture: facture.Datefacture,
+        montant: facture.montant,
+        bonCommande: facture.bonCommande,
+        transmisDPT: facture.transmisDPT,
+        transmisDFC: facture.transmisDFC,
+        observations: facture.observations,
+        imputation: facture.imputation,
+        fichier: facture.fichier,
+        dateVirement: facture.dateVirement,
+        arrivee: facture.arrivee,
+      });
+    });
+  
+    // Générez un blob à partir du classeur Excel
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+      // Créez un URL d'objet à partir du blob
+      const url = window.URL.createObjectURL(blob);
+  
+      // Créez un lien d'exportation
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Factures_annee_${selectedYear}.xlsx`;
+      a.click();
+  
+      // Libérez l'URL d'objet
+      window.URL.revokeObjectURL(url);
+    });
   };
+
   console.log("utilisateurs:", users);
   useEffect(() => {
     fetch('http://localhost:5000/api/users')
@@ -78,13 +155,13 @@ function ArchiveUser() {
     }))}
     onChange={(selectedYear) => handleYearClick(selectedYear.value)}
   />
-<div style={{ marginLeft: '700px' }}></div> 
-  <Button variant="success" onClick={handleDownloadClick}>
+<div style={{ marginLeft: '80%' }}></div> 
+  <Button variant="success" onClick={exportToExcel}>
             Télécharger
           </Button>
 </div>
 <br/>
-          <Table striped bordered hover style={{ width: '100%', margin: '0 auto' }}>
+          <Table striped bordered hover style={{ width: '98%', margin: '0 auto' }}>
             <thead>
               <tr>
                 <th>N°</th>
@@ -129,6 +206,34 @@ function ArchiveUser() {
           </Table>
           
         </div>
+        <Modal show={showErroorModal} onHide={() => setShowErroorModal(false)}>
+  <Modal.Header closeButton>
+    <Modal.Title>Erreur</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {erroorMessage}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowErroorModal(false)}>
+      Fermer
+    </Button>
+  </Modal.Footer>
+</Modal>
+
+        <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+  <Modal.Header closeButton>
+    <Modal.Title>Erreur</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {errorMessage}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowErrorModal(false)}>
+      Fermer
+    </Button>
+  </Modal.Footer>
+</Modal>
+
       </div>
     </div>
   );
