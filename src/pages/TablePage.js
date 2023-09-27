@@ -38,7 +38,7 @@ function TablePage() {
     transmisDFC: '',
     observations: '',
     imputation: '',
-    fichier: '',
+    fichier: { name: '' },
     dateVirement: '',
     arrivee: '',
 
@@ -143,11 +143,11 @@ function TablePage() {
   const handleCloseModal = () => { setShowModal(false);};
 
   const handleCloseModalEdit = () => { setShowModalEdit(false);};
-  
 
   const handleFileChange = async (e) => {
     console.log("apl change file ")
     const selectedFile = e.target.files[0];
+   
     setFacture({ ...facture, fichier: selectedFile });
   
     // Upload the file to the server and get the image URL
@@ -602,9 +602,10 @@ useEffect(() => {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-        
+          value={facture.fichier.name}
         />
       </Form.Group>
+     
 
       <Form.Group controlId="exampleForm.ControlInput4">
                 <Form.Label>Date et N de virement </Form.Label>
