@@ -30,6 +30,7 @@ function Fournisseur() {
 
       // Mettre à jour l'état avec les informations de l'utilisateur décodé
       setUserId(decodedUser.userId);
+      
     }
   }, []);
 
@@ -88,7 +89,7 @@ function Fournisseur() {
       console.error('Erreur lors de la modification de prestataire:', error);
     }
   };
-
+  console.log(userid);
   const handleDeletePrestataire = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:5000/api/prestataire/${id}`);
@@ -111,7 +112,9 @@ function Fournisseur() {
               {formDataPrestataire.selectedUserId ? 'Utilisateur sélectionné' : 'Sélectionner un utilisateur'}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              {users.map(user => (
+              {users
+              .filter(user => user.role !== 'admin')
+              .map(user => (
                 <Dropdown.Item
                   key={user._id}
                   onClick={() => setFormDataPrestataire({ ...formDataPrestataire, selectedUserId: user._id })}
@@ -159,7 +162,6 @@ function Fournisseur() {
           </thead>
           <tbody>
     {prestataires
-      .filter(prestataire => prestataire.userid === userid)
       .filter(prestataire => {
         const searchRegex = new RegExp(searchTerm, 'i');
         return searchRegex.test(prestataire.Nom_pres) || searchRegex.test(prestataire.Region_pres);
