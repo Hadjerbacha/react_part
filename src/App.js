@@ -4,7 +4,6 @@ import Tablepage from "./pages/TablePage";
 import Prestataire from "./pages/prestataire";
 import Singup from "./pages/Singup";
 import Adduser from "./pages/adduser";
-import ArchivePage from "./pages/archive";
 import Archive from "./pages/archive";
 import Consulte from "./pages/consulte";
 import Statistiques from "./pages/tableau_bord";
@@ -26,6 +25,8 @@ function App() {
 			<Route path="/fournisseur" exact element={<Fournisseur />} />
 			<Route path="/tableau_de_bord" exact element={<Statistiques />} />
 			<Route path="/" element={<Navigate replace to="/login" />} />
+			<Route path="/prestataire" element={<Navigate replace to="/login" />} />
+			{user && <Route path="/consulte" exact element={<Consulte />} />}
 		</Routes>
 	);
 }

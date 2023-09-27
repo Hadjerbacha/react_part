@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import Select from 'react-select';
 import jwtDecode from 'jwt-decode';
 
 
 function ArchiveUser() {
   const years = Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => new Date().getFullYear() - i);
-  const [scrollLeft, setScrollLeft] = useState(0);
+ 
   const [factures, setFactures] = useState([]);
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
 
   const handleYearClick = (year) => {
     setSelectedYear(year);
   };
 
-  const handleUserButtonClick = (userId) => {
-    setSelectedUserId(userId);
-  };
+  
   const [userId, setUserId] = useState( "");
   useEffect(() => {
     // Fonction à exécuter au chargement de la page
@@ -46,7 +43,7 @@ function ArchiveUser() {
 
     // ... Votre logique de téléchargement CSV
   };
-
+  console.log("utilisateurs:", users);
   useEffect(() => {
     fetch('http://localhost:5000/api/users')
       .then(response => response.json())
@@ -81,19 +78,28 @@ function ArchiveUser() {
     }))}
     onChange={(selectedYear) => handleYearClick(selectedYear.value)}
   />
-  <div style={{ margin: '0 10px  ' }}></div> {/* Espace horizontal de 10 pixels */}
- 
+<div style={{ marginLeft: '700px' }}></div> 
+  <Button variant="success" onClick={handleDownloadClick}>
+            Télécharger
+          </Button>
 </div>
-
-          <table className="table">
+<br/>
+          <Table striped bordered hover style={{ width: '100%', margin: '0 auto' }}>
             <thead>
               <tr>
-                <th>
-                 N de facture 
-                </th>
-                <th>
-                Prestataire
-                </th>
+                <th>N°</th>
+                <th>Prestataire/Fournisseur</th>
+                <th>Facture N°</th>
+                <th>Date Facture</th>
+                <th>Montant</th>
+                <th>Bon de Commande ou Contrat N°</th>
+                <th>Transmis à DPT le</th>
+                <th>Transmis à DFC le</th>
+                <th>Observations</th>
+                <th>Imputation</th>
+                <th>Fichier</th>
+                <th>Date et N° de virement</th>
+                <th>Arrivée le</th>
               </tr>
             </thead>
             <tbody>
@@ -106,13 +112,22 @@ function ArchiveUser() {
     <tr key={facture.N}>
       <td>{facture.N}</td>
       <td>{facture.Prestataire_fournisseur}</td>
+      <td>{facture.factureN}</td>
+        <td>{facture.Datefacture}</td>
+        <td>{facture.montant}</td>
+        <td>{facture.bonCommande}</td>
+        <td>{facture.transmisDPT}</td>
+        <td>{facture.transmisDFC}</td>
+        <td>{facture.observations}</td>
+        <td>{facture.imputation}</td>
+        <td>{facture.fichier}</td>
+        <td>{facture.dateVirement}</td>
+        <td>{facture.arrivee}</td>
     </tr>
   ))}
             </tbody>
-          </table>
-          <Button variant="success" onClick={handleDownloadClick}>
-            Télécharger
-          </Button>
+          </Table>
+          
         </div>
       </div>
     </div>

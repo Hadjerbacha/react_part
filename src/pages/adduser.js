@@ -25,12 +25,14 @@ const AddUser = () => {
         firstName: '',
         email: '',
         password: '',
+        role: '',
       };
       const [data, setData] = useState({
 		firstName: "",
 		lastName: "",
 		email: "",
 		password: "",
+        role: "",
 	});
       const handleChange = ({ currentTarget: input }) => {
 		setData({ ...data, [input.name]: input.value });
@@ -65,6 +67,7 @@ const AddUser = () => {
             firstName: '',
             email: '',
             password: '',
+            role: '',
           });
           const [showModalEdit, setShowModalEdit] = useState(false);
           const handleCloseModalEdit = () => { setShowModalEdit(false);};
@@ -75,6 +78,7 @@ const AddUser = () => {
             firstName: user.firstName,
             email: user.email,
             password: user.password,
+            role: user.role,
             });
             setShowModalEdit(true);
           };
@@ -104,6 +108,7 @@ const AddUser = () => {
               firstName: user.firstName,
               email: user.email,
               password: user.password,
+              role: user.role,
               });
            
          
@@ -126,7 +131,7 @@ const AddUser = () => {
         <br /><br /><>
             <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
                 <Modal.Header closeButton>
-                    <Modal.Title>modifierla l'utilisateur</Modal.Title>
+                    <Modal.Title>modifier l'utilisateur</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -172,6 +177,19 @@ const AddUser = () => {
                                 autoFocus
                                 required />
                         </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlInput2">
+                            <Form.Label>Role </Form.Label>
+                            <Form.Control
+                                as="select" // Utilisez "as" avec la valeur "select" pour créer un champ de sélection
+                                value={user.role}
+                                onChange={(e) => setUser({ ...user, role: e.target.value })}
+                                autoFocus
+                                required
+                            >
+                                <option value="admin">admin</option>
+                                <option value="user">user</option>
+                            </Form.Control>
+                        </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -189,6 +207,7 @@ const AddUser = () => {
                                 <th>Nom</th>
                                 <th>Prenom</th>
                                 <th>E_mail</th>
+                                <th>Role</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -196,9 +215,10 @@ const AddUser = () => {
                             .filter((user) => user.actif === true)
                             .map((user) => (
                                 <tr key={user._id}>
-                                    <td>{user.firstName}</td>
                                     <td>{user.lastName}</td>
+                                    <td>{user.firstName}</td>
                                     <td>{user.email}</td>
+                                    <td>{user.role}</td>
                                     <td>
                                         <Button onClick={() => handleShowModalEdit(user)} className="btn btn-warning">
                                             <FontAwesomeIcon icon={faPencilAlt} />
@@ -256,6 +276,20 @@ const AddUser = () => {
                                         onChange={handleChange}
                                         required />
                                 </Form.Group>
+                                <Form.Group controlId="exampleForm.ControlInput2">
+                            <Form.Label>Role </Form.Label>
+                            <Form.Control
+                                as="select" // Utilisez "as" avec la valeur "select" pour créer un champ de sélection
+                                name="role"
+                                placeholder="Role"
+                                value={data.role}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="admin">Administrateur</option>
+                                <option value="user">Utilisateur</option>
+                            </Form.Control>
+                        </Form.Group>
 
                                 {error && <div>{error}</div>}
 

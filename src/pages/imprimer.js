@@ -17,7 +17,7 @@ const imprimer = (facture) => {
     pdf.setFontSize(12);
     pdf.text(` ${facture.factureN}`,55, 51);
     pdf.text(` ${facture.Prestataire_fournisseur}`, 155, 47.5);
-    pdf.text(` ${facture.observations}`, 43, 267);
+    pdf.text(` ${facture.observations}`, 43, 266);
     pdf.text(` ${facture.montant}`, 168, 166);
     pdf.text(`005`, 160, 116);
     pdf.text(`X`, 103, 143);
@@ -25,7 +25,7 @@ const imprimer = (facture) => {
     pdf.text(` ${facture.montant}`, 168, 223);
     pdf.text(` ${facture.montant}`, 91, 223);
     pdf.text(` ${facture.montant}`, 91, 174);
-    pdf.text(` ${facture.imputation}`, 70, 174);
+    pdf.text(` ${facture.imputation}`, 60, 174);
 
     
     const dateFacture = facture.Datefacture;

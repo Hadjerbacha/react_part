@@ -498,7 +498,7 @@ useEffect(() => {
       </Modal> 
       <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
       <Modal.Header closeButton>
-          <Modal.Title>modifierla Facture</Modal.Title>
+          <Modal.Title>modifier la Facture</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -522,6 +522,17 @@ useEffect(() => {
     readOnly // Pour rendre le champ en lecture seule
   />
 </Form.Group>
+<Form.Group controlId="exampleForm.ControlSelect1">
+                            <Form.Label>Prestataire/Fournisseur</Form.Label>
+                            <Form.Control
+                                as="select" // Utilisez "as" avec la valeur "select" pour créer un champ de sélection
+                                value={facture.Prestataire_fournisseur}
+                                onChange={(e) => setFacture({ ...facture, Prestataire_fournisseur: e.target.value })}
+                                required
+                            >
+                                <MyComponent />
+                            </Form.Control>
+                        </Form.Group>
 
               
 <Form.Group controlId="exampleForm.ControlInput2">

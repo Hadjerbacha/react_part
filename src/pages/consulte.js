@@ -369,7 +369,7 @@ function Consulte() {
   };
 
   // Filtrer les utilisateurs ayant "admin" comme nom de famille
-  const filteredUsers = users.filter(user => user.lastName !== 'admin' && user._id !== userid );
+  const filteredUsers = users.filter(user => user.role !== 'admin' && user._id !== userid );
 
   // Organiser les factures par userId
   const facturesParUtilisateur = {};
@@ -443,7 +443,13 @@ function Consulte() {
                 </tbody>
               </Table>
             ) : (
-              <p>Aucune facture pour cet utilisateur.</p>
+              <Table striped bordered hover>
+                <tbody>
+                  <tr>
+                    <td>Aucune facture pour cet utilisateur.</td>
+                  </tr>
+                </tbody>
+              </Table>
             )}
           </div>
         )}
