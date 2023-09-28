@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Tablepage from "./pages/TablePage"; 
@@ -9,12 +10,60 @@ import Consulte from "./pages/consulte";
 import Statistiques from "./pages/tableau_bord";
 import ArchiveUser from "./pages/archiveUser";
 import Fournisseur from "./pages/fournisseur";
+import jwtDecode from 'jwt-decode';
+
 function App() {
 	const user = localStorage.getItem("token");
+	const [userId, setUserId] = useState("");
+	const [currentUser, setCurrentUser] = useState(null);
+	const [users, setUsers] = useState([]);
+
+	useEffect(() => {
+		// Récupérer le jeton JWT depuis le stockage local
+		const token = localStorage.getItem('token');
+		console.log("tokennnnnnnn", token)
+	
+		if (token) {
+		  // Déchiffrer le jeton JWT pour obtenir les informations de l'utilisateur
+		  const decodedUser = jwtDecode(token);
+		  console.log("user", decodedUser)
+	
+		  // Mettre à jour l'état avec les informations de l'utilisateur décodé
+		  setUserId(decodedUser.userId);
+		}
+	  }, []);
+	  useEffect(() => {
+		// Charger les utilisateurs depuis l'API
+		fetch('http://localhost:5000/api/users')
+		  .then(response => response.json())
+		  .then(data => {
+			setUsers(data);
+		  })
+		  .catch(error => console.error('Error fetching users:', error));
+	  }, []);
+	  useEffect(() => {
+		// Rechercher l'utilisateur correspondant lors du chargement du composant
+		if (userId && users.length > 0) {
+		  const foundUser = users.find(user => user._id === userId);
+		  if (foundUser) {
+			setCurrentUser(foundUser);
+		  }
+		}
+	  }, [userId, users]);
 
 	return (
 		<Routes>
-			{user && <Route path="/" exact element={<Tablepage />} />}
+		 {user ? (
+    currentUser?.role === 'admin' ? (
+      <Route path="/" exact element={<Consulte />} />
+    ) : currentUser?.role === 'user' ? (
+      <Route path="/" exact element={<Tablepage />} />
+    ) : (
+      <Route path="/" exact element={<Login />} />
+    )
+  ) : (
+    <Route path="/" exact element={<Login />} />
+  )}
 			<Route path="/prestataire" exact element={<Prestataire />} />
 			<Route path="/login" exact element={<Login />} />
 			<Route path="/singup" exact element={<Singup />} />

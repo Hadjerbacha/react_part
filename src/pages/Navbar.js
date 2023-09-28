@@ -58,7 +58,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.reload();
+    window.location.replace("/login");
   };
 
   // Définissez vos éléments de menu en fonction du rôle de l'utilisateur

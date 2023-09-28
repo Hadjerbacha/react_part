@@ -285,6 +285,7 @@ const handleAdd = () => {
   
         // Mettre à jour l'état avec les informations de l'utilisateur décodé
         setUserId(decodedUser.userId);
+        console.log("iDDDDDDDdd",userId)
       }
     }, []);
   const handleDeleteClick = (factureId) => { handleDelete(factureId);};
@@ -514,14 +515,18 @@ useEffect(() => {
         />
       </Form.Group>
 
-              <Form.Group controlId="exampleForm.ControlSelect1">
-  <Form.Label>Prestataire/Fournisseur</Form.Label>
-
-  <Form.Control
-    value={facture.Prestataire_fournisseur}
-    readOnly // Pour rendre le champ en lecture seule
+      <Form.Group controlId="exampleForm.ControlSelect1">
+                <Form.Label>Prestataire/Fournisseur</Form.Label>
+               
+                <Select
+    
+   value={prestataires.find((option) => option.value === formData.Prestataire_fournisseur)}
+   onChange={(selectedOption) => setFacture({ ...facture, Prestataire_fournisseur: selectedOption.value })}
+    autoFocus
+    required
+    options={prestataires}
   />
-</Form.Group>
+              </Form.Group>
   
 <Form.Group controlId="exampleForm.ControlInput2">
         <Form.Label>Facture N°</Form.Label>
@@ -784,7 +789,10 @@ useEffect(() => {
   </thead>
   <tbody>
     {searchResults
-    .filter(facture => facture.userId === userId)
+    .filter((facture) => {
+      const factureYear = new Date(facture.Datefacture).getFullYear();
+      const currentYear = new Date().getFullYear();
+      return facture.userId === userId && factureYear === currentYear;    })
     .map((facture, index) => (
       <tr key={facture._id}>
         <td>
