@@ -289,7 +289,57 @@ const handleAdd = () => {
       }
     }, []);
   const handleDeleteClick = (factureId) => { handleDelete(factureId);};
- 
+
+  const [showpdfModal, setShowpdfModal] = useState(false);
+  const [startNum, setStartNum] = useState('');
+  const [endNum, setEndNum] = useState('');
+
+  const handleSendEmail = () => {
+    // Générer le PDF avec les numéros de début et de fin
+    const selectedFactures = factures.filter((facture) => {
+      const factureNumber = parseInt(facture.N);
+      const start = parseInt(startNum);
+      const end = parseInt(endNum);
+      return factureNumber >= start && factureNumber <= end;
+    });
+    generatePDF(selectedFactures);
+
+    // Pré-remplir les détails de l'e-mail
+    const subject = 'Factures';
+    const body = 'Veuillez trouver les factures ci-jointes.';
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    // Ouvrir la fenêtre de composition de courrier Outlook
+    window.location.href = mailtoLink;
+
+    // Fermer le modal après avoir effectué l'action
+    setShowpdfModal(false);
+  };
+
+  const generatePDF = (factures) => {
+    const doc = new jsPDF();
+    doc.text('Factures Exportées', 10, 10);
+
+    factures.forEach((facture, index) => {
+      const yPosition = 20 + index * 10;
+      doc.text(
+        `${generateInvoiceNumberr(facture.N)} - ${facture.Prestataire_fournisseur} - Montant: ${facture.montant}`,
+        10,
+        yPosition
+      );
+    });
+
+    doc.save('factures.pdf');
+  };
+
+  const generateInvoiceNumberr = (number) => {
+    // Logique pour générer un numéro d'invoice
+    return `INV-${number}`;
+  };
+
+ /*
   const [showModalpdf, setpdfShowModal] = useState(false);
   const [startNum, setStartNum] = useState('');
   const [endNum, setEndNum] = useState('');
@@ -324,7 +374,7 @@ const handleAdd = () => {
     // Call sendPDFByEmail here if you've implemented it
 
     setpdfShowModal(false);
-  };
+  };*/
   const [checked, setChecked] = useState(false); 
   const [factureSelectionne, setFactureSelectionne] = useState({
     _id:'',
@@ -405,7 +455,7 @@ useEffect(() => {
       <Navbar />
       <br/><br/>
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
-      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button> <Button onClick={() => setpdfShowModal(true)}><FontAwesomeIcon icon={faFilePdf} /> Exporter vers PDF</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
+      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button> <Button variant="primary" onClick={() => setShowpdfModal(true)}><FontAwesomeIcon icon={faFilePdf} />Envoyer par Outlook</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
       <Form.Control placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-search-input"/>
       <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
@@ -639,7 +689,7 @@ useEffect(() => {
         </Modal.Footer>
       </Modal> 
    
-      <Modal show={showModalpdf} onHide={() => setpdfShowModal(false)}>
+      {/*<Modal show={showModalpdf} onHide={() => setpdfShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Générer un PDF</Modal.Title>
         </Modal.Header>
@@ -669,6 +719,37 @@ useEffect(() => {
             variant="primary"
             onClick={() => handleSendPDF(startNum, endNum)}
           > Générer le PDF </Button>
+        </Modal.Footer>
+          </Modal>*/}
+          <Modal show={showpdfModal} onHide={() => setShowpdfModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Générer et envoyer un PDF</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="startNum">
+            <Form.Label>Numéro de début</Form.Label>
+            <Form.Control
+              type="number"
+              value={startNum}
+              onChange={(e) => setStartNum(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="endNum">
+            <Form.Label>Numéro de fin</Form.Label>
+            <Form.Control
+              type="number"
+              value={endNum}
+              onChange={(e) => setEndNum(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowpdfModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="primary" onClick={handleSendEmail}>
+            Envoyer par Outlook
+          </Button>
         </Modal.Footer>
       </Modal>
       <Modal show={showimpModal} onHide={() => setShowimpModal(false)}>
@@ -765,6 +846,7 @@ useEffect(() => {
           </Button>
         </Modal.Footer>
       </Modal>
+      
       <br/><br/>
      
       <Table striped bordered hover style={{ width: '100%', margin: '0 auto' }}>

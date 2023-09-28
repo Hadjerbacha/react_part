@@ -155,7 +155,7 @@ function ArchiveUser() {
     }))}
     onChange={(selectedYear) => handleYearClick(selectedYear.value)}
   />
-<div style={{ marginLeft: '80%' }}></div> 
+<div style={{ marginLeft: '70%' }}></div> 
   <Button variant="success" onClick={exportToExcel}>
             Télécharger
           </Button>

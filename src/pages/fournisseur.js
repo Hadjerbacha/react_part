@@ -74,6 +74,7 @@ function Fournisseur() {
       console.error('Erreur lors de l\'ajout de prestataire:', error);
     }
   };
+  
 
   const handleEditPrestataire = (prestataire) => {
     setSelectedPrestataire(prestataire);
@@ -92,6 +93,7 @@ function Fournisseur() {
     }
   };
   console.log(userid);
+  console.log(selectedUserName);
   const handleDeletePrestataire = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:5000/api/prestataire/${id}`);
@@ -164,23 +166,29 @@ function Fournisseur() {
             </tr>
           </thead>
           <tbody>
-    {prestataires
-      .filter(prestataire => {
-        const searchRegex = new RegExp(searchTerm, 'i');
-        return searchRegex.test(prestataire.Nom_pres) || searchRegex.test(prestataire.Region_pres);
-      })
-      .map(prestataire => (
+  {prestataires
+    .filter(prestataire => {
+      const searchRegex = new RegExp(searchTerm, 'i');
+      return searchRegex.test(prestataire.Nom_pres) || searchRegex.test(prestataire.Region_pres);
+    })
+    .map(prestataire => {
+      // Trouver l'utilisateur correspondant
+      const associatedUser = users.find(user => user._id === prestataire.selectedUserId);
+
+      return (
         <tr key={prestataire._id}>
           <td>{prestataire.Nom_pres}</td>
           <td>{prestataire.Region_pres}</td>
-          <td>{selectedUserName}</td> {/* Afficher le nom de l'utilisateur sélectionné */}
+          <td>{associatedUser ? `${associatedUser.firstName} ${associatedUser.lastName}` : ''}</td>
           <td>
             <Button variant="success" onClick={() => handleEditPrestataire(prestataire)}><FaEdit /></Button>{' '}
             <Button variant="danger" onClick={() => handleDeletePrestataire(prestataire._id)}><FaTrash /></Button>
           </td>
         </tr>
-      ))}
-  </tbody>
+      );
+    })}
+</tbody>
+
         </Table>
         <br />
       </div>
