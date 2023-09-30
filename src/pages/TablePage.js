@@ -12,7 +12,8 @@ import {  faTrash, faFilePdf, faPrint, faFileExcel, faPlus } from '@fortawesome/
 import '../style/style.css';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 //import EditModal, { handleEdit } from './edit_fac'; 
-import jsPDF from 'jspdf'; 
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { useReactToPrint } from 'react-to-print'; 
 import axios from 'axios';
 
@@ -285,9 +286,11 @@ const handleAdd = () => {
   
         // Mettre à jour l'état avec les informations de l'utilisateur décodé
         setUserId(decodedUser.userId);
-        console.log("iDDDDDDDdd",userId)
+        
       }
     }, []);
+    console.log("iDDDDDDDdd",userId);
+    
   const handleDeleteClick = (factureId) => { handleDelete(factureId);};
 
   const [showpdfModal, setShowpdfModal] = useState(false);
@@ -303,7 +306,7 @@ const handleAdd = () => {
       return factureNumber >= start && factureNumber <= end;
     });
     generatePDF(selectedFactures);
-
+    console.log('PDF généré et téléchargé avec succès !');
     // Pré-remplir les détails de l'e-mail
     const subject = 'Factures';
     const body = 'Veuillez trouver les factures ci-jointes.';
@@ -318,26 +321,86 @@ const handleAdd = () => {
     setShowpdfModal(false);
   };
 
-  const generatePDF = (factures) => {
-    const doc = new jsPDF();
-    doc.text('Factures Exportées', 10, 10);
+  
+    const generatePDF = () => {
+      const doc = new jsPDF();
+      const headStyles = {
+        fillStyle: 'striped',
+        fontStyle: 'bold',
+        textColor: [0, 0, 0], // Police en gras pour l'en-tête
+        fillColor: [256, 256, 256], // Couleur de fond de l'en-tête (gris)
+      };
+    
+      // Définir les styles de ligne
+      const rowStyles = {
+        drawRow(row, data) {
+          // Ajouter des lignes de grille après chaque ligne de données
+          doc.setDrawColor(0); // Couleur de la ligne (noir)
+          doc.setLineWidth(0.5); // Épaisseur de la ligne
+          doc.line(10, row.y + row.height, 200, row.y + row.height); // Dessiner la ligne
+        },
+      };
+      const imgData = 'logosonatrach.png';
+      doc.addImage(imgData, 'PNG', 20, 5, 25, 35); 
+      doc.setFontSize(16); 
+      doc.setFont('helvetica', 'bold');
+      doc.text('Bordereau d\'envoi', 100, 25);
+      doc.setFont('helvetica', 'normal');
+// Revenez à la taille de police par défaut
+    doc.setFontSize(13);
+    // Informations d'expéditeur
+    doc.text('Expéditeur', 22, 47);
+    doc.text('Service Ordonnancement', 8, 53);
+    
+    // Informations de destinataire
+    doc.text('Destinataire:', 90, 53);
+    doc.setFont('helvetica', 'bold'); // Définir le style de police en gras
+    doc.text(' Monsieur le chef département liaisons', 115, 53);
+    doc.setFont('helvetica', 'normal'); 
+    // Autres informations
+   doc.text('DGP', 26, 59);
+    doc.text('Fait par:', 140, 59);
+    doc.setFont('helvetica', 'bold'); // Revenez au style de police normal
+    doc.text(' Mme.', 156, 59);
+    
+    doc.setFont('helvetica', 'normal');
+    // Tableau
+    doc.autoTable({
+      startX:2,
+      startY: 80, // Position verticale de départ du tableau
+      head: [
+        ['N°', 'Prestataire/Fournisseur', 'Facture N°', 'Date Facture', 'Montant', 'Bon de Commande ou Contrat N°'],
+      ],
+      body: factures
+        .filter(facture => facture.N >= startNum && facture.N <= endNum  && facture.userId === userId)
+        .map(facture => [
+          generateInvoiceNumber(facture.N),
+          facture.Prestataire_fournisseur,
+          facture.factureN,
+          facture.Datefacture,
+          facture.montant,
+          facture.bonCommande,
+        ]), 
+        styles: {
+          fontSize: 13,
+          fontStyle: 'normal',
+          textColor: [0, 0, 0],
+          fillStyle: 'striped', // Style de remplissage des cellules (striped)
+        },
+        headStyles: headStyles,
+        rowStyles: rowStyles,
+        
+      });
+      
 
-    factures.forEach((facture, index) => {
-      const yPosition = 20 + index * 10;
-      doc.text(
-        `${generateInvoiceNumberr(facture.N)} - ${facture.Prestataire_fournisseur} - Montant: ${facture.montant}`,
-        10,
-        yPosition
-      );
-    });
+    const currentDate = new Date();
+  const fileName = `factures_${currentDate.getTime()}.pdf`;
 
-    doc.save('factures.pdf');
+  // Téléchargez le PDF avec le nom de fichier personnalisé
+  doc.save(fileName);
+    
   };
-
-  const generateInvoiceNumberr = (number) => {
-    // Logique pour générer un numéro d'invoice
-    return `INV-${number}`;
-  };
+  
 
  /*
   const [showModalpdf, setpdfShowModal] = useState(false);
@@ -570,7 +633,7 @@ useEffect(() => {
                
                 <Select
     
-   value={prestataires.find((option) => option.value === formData.Prestataire_fournisseur)}
+   value={prestataires.find((option) => option.value === facture.Prestataire_fournisseur)}
    onChange={(selectedOption) => setFacture({ ...facture, Prestataire_fournisseur: selectedOption.value })}
     autoFocus
     required
