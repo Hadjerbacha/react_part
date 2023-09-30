@@ -633,7 +633,7 @@ useEffect(() => {
                
                 <Select
     
-   value={prestataires.find((option) => option.value === formData.Prestataire_fournisseur)}
+   value={prestataires.find((option) => option.value === facture.Prestataire_fournisseur)}
    onChange={(selectedOption) => setFacture({ ...facture, Prestataire_fournisseur: selectedOption.value })}
     autoFocus
     required
