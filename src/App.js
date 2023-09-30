@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Tablepage from "./pages/TablePage"; 
 import Prestataire from "./pages/prestataire";
@@ -73,9 +73,6 @@ function App() {
 			<Route path="/consulte" exact element={<Consulte />} />
 			<Route path="/fournisseur" exact element={<Fournisseur />} />
 			<Route path="/tableau_de_bord" exact element={<Statistiques />} />
-			<Route path="/" element={<Navigate replace to="/login" />} />
-			<Route path="/prestataire" element={<Navigate replace to="/login" />} />
-			{user && <Route path="/consulte" exact element={<Consulte />} />}
 		</Routes>
 	);
 }
