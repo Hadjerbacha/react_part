@@ -135,7 +135,7 @@ const AddUser = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group controlId="exampleForm.ControlInput2">
+                        <Form.Group controlId="exampleForm.ControlInput21">
                             <Form.Label>Nom de l'utilisateur </Form.Label>
                             <Form.Control
                                 type="text"
@@ -145,7 +145,7 @@ const AddUser = () => {
                                 autoFocus
                                 required />
                         </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlInput2">
+                        <Form.Group controlId="exampleForm.ControlInput22">
                             <Form.Label>Prénom de l'utilisateur</Form.Label>
                             <Form.Control
                                 type="text"
@@ -156,7 +156,7 @@ const AddUser = () => {
                                 autoFocus
                                 required />
                         </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlInput2">
+                        <Form.Group controlId="exampleForm.ControlInput23">
                             <Form.Label>E_mail de l'utilisateur</Form.Label>
                             <Form.Control
                                 type="text"
@@ -167,17 +167,17 @@ const AddUser = () => {
                                 autoFocus
                                 required />
                         </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlInput2">
+                        <Form.Group controlId="exampleForm.ControlInput24">
                             <Form.Label>Mot de passe </Form.Label>
                             <Form.Control
-                                type="text"
+                                type="password"
                                 placeholder="Mot de passe"
                                 value={user.password}
                                 onChange={(e) => setUser({ ...user, password: e.target.value })}
                                 autoFocus
                                 required />
                         </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlInput2">
+                        <Form.Group controlId="exampleForm.ControlInput25">
                             <Form.Label>Role </Form.Label>
                             <Form.Control
                                 as="select" // Utilisez "as" avec la valeur "select" pour créer un champ de sélection
@@ -186,8 +186,8 @@ const AddUser = () => {
                                 autoFocus
                                 required
                             >
-                                <option value="admin">admin</option>
-                                <option value="user">user</option>
+                                <option value="user">utilisateur</option>
+                                <option value="admin">administrateur</option>
                             </Form.Control>
                         </Form.Group>
                     </Form>
@@ -239,7 +239,7 @@ const AddUser = () => {
                         </Modal.Header>
                         <Modal.Body>
                             <form>
-                                <Form.Group controlId="exampleForm.ControlInput2">
+                                <Form.Group controlId="exampleForm.ControlInput26">
                                     <Form.Label>Nom de l'utilisateur </Form.Label>
                                     <Form.Control
                                         type="text"
@@ -248,7 +248,7 @@ const AddUser = () => {
                                         value={data.lastName}
                                         onChange={handleChange} />
                                 </Form.Group>
-                                <Form.Group controlId="exampleForm.ControlInput2">
+                                <Form.Group controlId="exampleForm.ControlInput27">
                                     <Form.Label>Prénom de l'utilisateur</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -257,7 +257,7 @@ const AddUser = () => {
                                         value={data.firstName}
                                         onChange={handleChange} />
                                 </Form.Group>
-                                <Form.Group controlId="exampleForm.ControlInput2">
+                                <Form.Group controlId="exampleForm.ControlInput28">
                                     <Form.Label>E_mail de l'utilisateur</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -266,7 +266,7 @@ const AddUser = () => {
                                         value={data.email}
                                         onChange={handleChange} />
                                 </Form.Group>
-                                <Form.Group controlId="exampleForm.ControlInput2">
+                                <Form.Group controlId="exampleForm.ControlInput29">
                                     <Form.Label>Mot de passe </Form.Label>
                                     <Form.Control
                                         type="text"
@@ -276,7 +276,7 @@ const AddUser = () => {
                                         onChange={handleChange}
                                         required />
                                 </Form.Group>
-                                <Form.Group controlId="exampleForm.ControlInput2">
+                                <Form.Group controlId="exampleForm.ControlInput30">
                             <Form.Label>Role </Form.Label>
                             <Form.Control
                                 as="select" // Utilisez "as" avec la valeur "select" pour créer un champ de sélection
@@ -286,8 +286,8 @@ const AddUser = () => {
                                 onChange={handleChange}
                                 required
                             >
+                                <option value="user">utilisateur</option>
                                 <option value="admin">Administrateur</option>
-                                <option value="user">Utilisateur</option>
                             </Form.Control>
                         </Form.Group>
 

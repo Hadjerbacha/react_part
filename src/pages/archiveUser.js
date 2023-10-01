@@ -7,8 +7,12 @@ import ExcelJS from 'exceljs';
 
 
 function ArchiveUser() {
-  const years = Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => new Date().getFullYear() - i);
- 
+  const years = [
+    { label: 'Toutes les années', value: null }, // Utilisez une chaîne vide comme valeur pour "Tous"
+    ...Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => ({ label: (new Date().getFullYear() - i).toString(), value: new Date().getFullYear() - i }))
+  ];
+  
+  
   const [factures, setFactures] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
@@ -147,14 +151,14 @@ function ArchiveUser() {
       
           <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ margin: '0 10px ' }}></div> 
-  <Select
-    placeholder="Sélectionner l'année"
-    options={years.map((year) => ({
-      label: year,
-      value: year,
-    }))}
-    onChange={(selectedYear) => handleYearClick(selectedYear.value)}
-  />
+          <Select
+  placeholder="Sélectionner l'année"
+  options={years.map((year) => ({
+    label: year.label,
+    value: year.value,
+  }))}
+  onChange={(selectedYear) => handleYearClick(selectedYear.value)}
+/>
 <div style={{ marginLeft: '70%' }}></div> 
   <Button variant="success" onClick={exportToExcel}>
             Télécharger
@@ -182,8 +186,12 @@ function ArchiveUser() {
             <tbody>
             {factures
   .filter((facture) => {
+    if (selectedYear === null) {
+      // Si l'année sélectionnée est une chaîne vide (''), cela signifie "Tous", donc affichez toutes les années.
+      return true;
+    }
     const factureYear = new Date(facture.Datefacture).getFullYear();
-    return (selectedYear === null || factureYear === selectedYear) && (facture.userId === userId);
+    return factureYear === selectedYear && facture.userId === userId;
   })
   .map((facture) => (
     <tr key={facture.N}>

@@ -161,7 +161,7 @@ function Fournisseur() {
             <tr>
               <th>Nom du prestataire/fournisseur</th>
               <th>Région du prestataire/fournisseur</th>
-              <th>Nom de l'utilisateur</th> {/* Colonne du nom de l'utilisateur */}
+              <th>Nom de l'utilisateur</th> 
               <th>Actions</th>
             </tr>
           </thead>
@@ -174,7 +174,6 @@ function Fournisseur() {
     .map(prestataire => {
       // Trouver l'utilisateur correspondant
       const associatedUser = users.find(user => user._id === prestataire.selectedUserId);
-
       return (
         <tr key={prestataire._id}>
           <td>{prestataire.Nom_pres}</td>
@@ -188,11 +187,9 @@ function Fournisseur() {
       );
     })}
 </tbody>
-
         </Table>
         <br />
       </div>
-
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifier Prestataire</Modal.Title>

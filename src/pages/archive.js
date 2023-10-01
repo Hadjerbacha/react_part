@@ -6,7 +6,11 @@ import ExcelJS from 'exceljs';
 
 
 function ArchivePage() {
-  const years = Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => new Date().getFullYear() - i);
+  const years = [
+    { label: 'Toutes les années', value: null }, // Utilisez une chaîne vide comme valeur pour "Tous"
+    ...Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => ({ label: (new Date().getFullYear() - i).toString(), value: new Date().getFullYear() - i }))
+  ];
+  
   const [factures, setFactures] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -133,24 +137,28 @@ function ArchivePage() {
           <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ margin: '0 10px ' }}></div> 
   <Select
-    placeholder="Sélectionner l'année"
-    options={years.map((year) => ({
-      label: year,
-      value: year,
-    }))}
-    onChange={(selectedYear) => handleYearClick(selectedYear.value)}
-  />
+  placeholder="Sélectionner l'année"
+  options={years.map((year) => ({
+    label: year.label,
+    value: year.value,
+  }))}
+  onChange={(selectedYear) => handleYearClick(selectedYear.value)}
+/>
   <div style={{ margin: '0 10px  ' }}></div> {/* Espace horizontal de 10 pixels */}
   <Select
-    placeholder="Sélectionner l'utilisateur"
-    options={users
+  placeholder="Sélectionner l'utilisateur"
+  options={[
+    { label: 'Tous les utilisateurs', value: null },  // Option "Tous les utilisateurs"
+    ...users
       .filter(user => user.role !== 'admin')
       .map((user) => ({
-      label: user.lastName,
-      value: user._id,
-    }))}
-    onChange={(selectedUser) => handleUserButtonClick(selectedUser.value)}
-  />
+        label: user.lastName,
+        value: user._id,
+      }))
+  ]}
+  onChange={(selectedUser) => handleUserButtonClick(selectedUser.value)}
+/>
+
   <div style={{ marginLeft: '70%' }}></div> 
   <Button variant="success" onClick={exportToExcel}>
             Télécharger
@@ -179,7 +187,18 @@ function ArchivePage() {
             {factures
   .filter((facture) => {
     const factureYear = new Date(facture.Datefacture).getFullYear();
-    return (selectedYear === null || factureYear === selectedYear) && (selectedUserId === null || facture.userId === selectedUserId);
+
+    // Vérifiez si "Toutes les années" est sélectionnée
+    if (selectedYear === null) {
+      return true; // Afficher toutes les années
+    }
+
+    // Vérifiez si "Tous les utilisateurs" est sélectionné
+    if (selectedUserId === null) {
+      return factureYear === selectedYear; // Afficher pour l'année sélectionnée uniquement
+    }
+
+    return factureYear === selectedYear && facture.userId === selectedUserId;
   })
   .map((facture) => (
     <tr key={facture.N}>
