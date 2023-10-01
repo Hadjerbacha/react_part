@@ -9,6 +9,7 @@ import Consulte from "./pages/consulte";
 import ArchiveUser from "./pages/archiveUser";
 import Fournisseur from "./pages/fournisseur";
 import jwtDecode from 'jwt-decode';
+import Line from './pages/Line';
 
 function App() {
 	const user = localStorage.getItem("token");
@@ -64,6 +65,7 @@ function App() {
   )}
 			<Route path="/prestataire" exact element={<Prestataire />} />
 			<Route path="/login" exact element={<Login />} />
+			<Route path="/line" element={<Line />} />
 			<Route path="/adduser" exact element={<Adduser />} />
 			<Route path="/archive" exact element={<ArchivePage />} />
 			<Route path="/archiveUser" exact element={<ArchiveUser />} />
