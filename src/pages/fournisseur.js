@@ -12,9 +12,12 @@ function Fournisseur() {
   const [formDataPrestataire, setFormDataPrestataire] = useState({
     Nom_pres: '',
     Region_pres: '',
-    selectedUserId: '', // ID de l'utilisateur sélectionné
+    selectedUserId: '',
+    lieux:'' // ID de l'utilisateur sélectionné
   });
   const [showModal, setShowModal] = useState(false);
+  const [showModal1, setShowModal1] = useState(false);
+
   const [selectedPrestataire, setSelectedPrestataire] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -70,6 +73,7 @@ function Fournisseur() {
 
       // Mettez à jour le nom de l'utilisateur sélectionné
       setSelectedUserName(`${selectedUser.firstName} ${selectedUser.lastName}`);
+      setShowModal1(false)
     } catch (error) {
       console.error('Erreur lors de l\'ajout de prestataire:', error);
     }
@@ -111,6 +115,24 @@ function Fournisseur() {
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
         <div className="d-flex align-items-center">
           {/* Ajouter un champ de sélection d'utilisateur */}
+    
+          <Button  onClick={() => setShowModal1(true)}><FaPlus /> Ajouter Prestataire</Button>
+           <div style={{ marginLeft: '35px' }}></div> {/*Espace */}
+          <Form.Group controlId="searchTerm" className="custom-search-input">
+            <Form.Control
+              type="text" 
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Form.Group>
+        </div> <br />
+        <Modal show={showModal1}onHide={() => setShowModal1(false)}>
+      <Modal.Header closeButton>
+          <Modal.Title>Ajouter un prestataire</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
           <Dropdown className="me-3">
             <Dropdown.Toggle variant="primary" id="dropdown-basic">
               {formDataPrestataire.selectedUserId ? 'Utilisateur sélectionné' : 'Sélectionner un utilisateur'}
@@ -127,35 +149,54 @@ function Fournisseur() {
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
-          </Dropdown>
+          </Dropdown>          <br/>
+
           
           <Form.Group controlId="Nom_pres" className="me-3">
+          <Form.Label>Nom du prestatire </Form.Label>
             <Form.Control
               type="text"
               placeholder="Nom du prestataire"
               value={formDataPrestataire.Nom_pres}
               onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, Nom_pres: e.target.value })}
             />
-          </Form.Group>
+          </Form.Group>          <br/>
+
           <Form.Group controlId="Region_pres" className="me-3">
+          <Form.Label>Region du  prestataire</Form.Label>
             <Form.Control
               type="text"
               placeholder="Région du prestataire"
               value={formDataPrestataire.Region_pres}
               onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, Region_pres: e.target.value })}
             />
-          </Form.Group>
-          <Button onClick={handleAddPrestataire}><FaPlus /> Ajouter Prestataire</Button>
-           <div style={{ marginLeft: '35px' }}></div> {/*Espace */}
-          <Form.Group controlId="searchTerm" className="custom-search-input">
-            <Form.Control
-              type="text" 
-              placeholder="Rechercher..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Form.Group>
-        </div> <br />
+          </Form.Group>          <br/>
+
+          <Form.Group controlId="lieux" className="me-3">
+  <Form.Label>Lieux</Form.Label>
+  <Form.Select
+    value={formDataPrestataire.lieux}
+    onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, lieux: e.target.value })}
+  >
+<option value="" disabled selected>Sélectionnez le lieu</option>   
+<option value="est">Est</option>
+ <option value="ouest">Ouest</option>
+     <option value="nord">Nord</option> 
+     <option value="sud">Sud</option>
+  
+  </Form.Select>
+</Form.Group>
+
+              
+          </Form>
+          <br/>
+        
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary"onHide={() => setShowModal1(false)}>Fermer</Button>
+          <Button variant="primary" onClick={handleAddPrestataire}>Ajouter</Button>
+        </Modal.Footer>
+      </Modal> 
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -192,6 +233,7 @@ function Fournisseur() {
         </Table>
         <br />
       </div>
+
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

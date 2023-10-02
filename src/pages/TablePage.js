@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Table, Button, Form } from 'react-bootstrap';
 import handleExportToExcel from './excel';
 import Select from 'react-select';
-import handleDelete from './delete_fac';
 import imprimer from './imprimer';
 import Navbar from './Navbar';
 import jwtDecode from 'jwt-decode';
@@ -25,7 +24,7 @@ function TablePage() {
   const [factures, setFactures] = useState([]);
   const [showImage, setShowImage] = useState(false);
  // const [imageSrc, setImageSrc] = useState('');
-
+ const [messageErreur, setMessageErreur] = useState('');
 
   const [facture, setFacture] = useState({
     _id:'',
@@ -110,13 +109,19 @@ function TablePage() {
     const invoiceNumber = String(num).padStart(3, '0') + '-' + String(month) + '/' + String(year);
     return invoiceNumber;
   }
-
   useEffect(() => {
+    // Fetch initial factures when the component mounts
+    fetchFactures();
+  }, []); // Empty dependency array to run this effect only once
+
+
+  const fetchFactures = () => {
     fetch('http://localhost:5000/api/facture')
       .then(response => response.json())
       .then(data => setFactures(data))
       .catch(error => console.error('Error fetching factures:', error));
-  }, []);
+  };
+
     useEffect(() => {
       const results = factures.filter(facture =>
         (facture.N && facture.N.toString().includes(searchTerm)) ||
@@ -141,7 +146,17 @@ function TablePage() {
   const handleShowModal = () => { setShowModal(true);
  };
 
-  const handleCloseModal = () => { setShowModal(false);};
+  const handleCloseModal = () => { setShowModal(false);
+    setFormData({
+      N: '',
+      factureN: '',
+      Datefacture: '',
+      montant: '',
+      bonCommande: '',
+      imputation: '',
+      observations: '',
+      Prestataire_fournisseur: '',
+    });};
 
   const handleCloseModalEdit = () => { setShowModalEdit(false);};
 
@@ -175,7 +190,19 @@ function TablePage() {
     const selectedFile = e.target.files[0];
     setFacture({ ...facture, fichier: e.target.value });
   };*/
-
+  const handleDelete = (factureId)=> {
+    fetch(`http://localhost:5000/api/facture/${factureId}`, {
+              method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+              // Supprimer la facture de l'affichage dans la liste des factures
+              console.log('Facture supprimée:', data);
+              // Rafraîchir la liste des factures en rechargeant la page (ou en utilisant un autre moyen pour mettre à jour les données)
+              fetchFactures();
+            })
+            .catch(error => console.error('Erreur lors de la suppression de la facture:', error));
+  };
   const handleEdit = () => {
     fetch(`http://localhost:5000/api/facture/${facture._id}`, {
       method: 'PUT',
@@ -191,7 +218,8 @@ function TablePage() {
         // Mettez à jour l'état de la facture avec les nouvelles données si nécessaire
         // setFacture(data); // Si le serveur renvoie les données mises à jour
         // Fermez le modèle de modification après la mise à jour réussie
-        window.location.reload();
+        fetchFactures();
+        handleCloseModalEdit()
       })
       .catch((error) =>
         console.error('Erreur lors de la mise à jour de la facture:', error)
@@ -251,8 +279,8 @@ const handleAdd = () => {
       // Une fois la facture ajoutée avec succès, vous pouvez rafraîchir la liste des factures pour afficher la nouvelle facture
       console.log('Facture ajoutée avec succès:', data);
       // Rafraîchir la liste des factures en rechargeant la page (ou en utilisant un autre moyen pour mettre à jour les données)
-      window.location.reload();
-    })
+      fetchFactures(); 
+   handleCloseModal()  })
     .catch(error => console.error('Erreur lors de l\'ajout de la facture:', error));
   } else {
     // Si le numéro de facture n'est pas unique, mettez à jour l'état d'erreur
@@ -518,7 +546,10 @@ useEffect(() => {
       <Navbar />
       <br/><br/>
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
-      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> <Button onClick={() => imprimer(factureSelectionne)}  variant="primary">Fiche Bon A Payer</Button> <Button variant="primary" onClick={() => setShowpdfModal(true)}><FontAwesomeIcon icon={faFilePdf} />Envoyer par Outlook</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
+      <Button onClick={handleShowModal}><FontAwesomeIcon icon={faPlus} /> Ajouter</Button> <Button onClick={handleExportToExcelClick}><FontAwesomeIcon icon={faFileExcel} /> Exporter vers Excel</Button> 
+
+      <Button onClick={() => imprimer(factureSelectionne,messageErreur)}  variant="primary">Fiche Bon A Payer</Button>
+       <Button variant="primary" onClick={() => setShowpdfModal(true)}><FontAwesomeIcon icon={faFilePdf} />Envoyer par Outlook</Button>  <Button onClick={() => setShowimpModal(true)}><FontAwesomeIcon icon={faPrint} /> Imprimer</Button>
       <Form.Control placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-search-input"/>
       <Modal show={showModal} onHide={handleCloseModal}>
       <Modal.Header closeButton>
