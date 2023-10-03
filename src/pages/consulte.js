@@ -388,7 +388,7 @@ function Consulte() {
       <div className="mx-auto" style={{ maxWidth: "95%" }}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px' }}>
           {filteredUsers.map((user, index) => (
-            <React.Fragment key={user}>
+            <React.Fragment key={user._id}>
               <Button
                 key={user._id}
                 variant="primary"

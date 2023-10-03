@@ -188,7 +188,7 @@ function ArchiveUser() {
   .filter((facture) => {
     if (selectedYear === null) {
       // Si l'année sélectionnée est une chaîne vide (''), cela signifie "Tous", donc affichez toutes les années.
-      return true;
+      return true && facture.userId === userId;
     }
     const factureYear = new Date(facture.Datefacture).getFullYear();
     return factureYear === selectedYear && facture.userId === userId;

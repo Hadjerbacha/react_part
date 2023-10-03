@@ -75,13 +75,16 @@ function Fournisseur() {
     }
   };
   
+  const [selectedUserId, setSelectedUserId] = useState("");
 
   const handleEditPrestataire = (prestataire) => {
     setSelectedPrestataire(prestataire);
+    setSelectedUserId(prestataire.selectedUserId); 
+    console.log(selectedUserId);
     setShowModal(true);
   };
 
-  const handleSaveEdit = async () => {
+  /*const handleSaveEdit = async () => {
     try {
       const response = await axios.put(`http://localhost:5000/api/prestataire/${selectedPrestataire._id}`, selectedPrestataire);
       console.log('Prestataire modifié avec succès:', response.data);
@@ -91,7 +94,38 @@ function Fournisseur() {
     } catch (error) {
       console.error('Erreur lors de la modification de prestataire:', error);
     }
+  };*/
+  
+  const handleSaveEdit = async () => {
+    try {
+      // Récupérez l'utilisateur sélectionné dans le formulaire de modification
+      const selectedUser = users.find(user => user._id === selectedPrestataire.userid);
+  
+      // Mettez à jour les données du prestataire sélectionné avec les nouvelles valeurs
+      const updatedPrestataire = {
+        ...selectedPrestataire,
+        Nom_pres: selectedPrestataire.Nom_pres,
+        Region_pres: selectedPrestataire.Region_pres,
+        userid: selectedUser._id,
+        selectedUserId: selectedUser.userid, // Mettez à jour l'ID de l'utilisateur ici
+      };
+  
+      // Envoyez la requête de mise à jour
+      const response = await axios.put(`http://localhost:5000/api/prestataire/${selectedPrestataire._id}`, updatedPrestataire);
+      console.log('Prestataire modifié avec succès:', response.data);
+  
+      // Rafraîchir la liste des prestataires
+      fetchPrestataires();
+  
+      // Fermez le modal et réinitialisez les valeurs
+      setShowModal(false);
+      setSelectedPrestataire(null);
+    } catch (error) {
+      console.error('Erreur lors de la modification de prestataire:', error);
+    }
   };
+
+
   console.log(userid);
   console.log(selectedUserName);
   const handleDeletePrestataire = async (id) => {

@@ -10,7 +10,7 @@ function ArchivePage() {
     { label: 'Toutes les années', value: null }, // Utilisez une chaîne vide comme valeur pour "Tous"
     ...Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => ({ label: (new Date().getFullYear() - i).toString(), value: new Date().getFullYear() - i }))
   ];
-  
+
   const [factures, setFactures] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);

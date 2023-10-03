@@ -290,6 +290,28 @@ const handleAdd = () => {
       }
     }, []);
     console.log("iDDDDDDDdd",userId);
+
+    const [currentUser, setCurrentUser] = useState(null);
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+    // Charger les utilisateurs depuis l'API
+    fetch('http://localhost:5000/api/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+      })
+      .catch(error => console.error('Error fetching users:', error));
+  }, []);
+    useEffect(() => {
+      // Rechercher l'utilisateur correspondant lors du chargement du composant
+      if (userId && users.length > 0) {
+        const foundUser = users.find(user => user._id === userId);
+        if (foundUser) {
+          setCurrentUser(foundUser);
+        }
+      }
+    }, [userId, users]);
     
   const handleDeleteClick = (factureId) => { handleDelete(factureId);};
 
@@ -361,7 +383,8 @@ const handleAdd = () => {
    doc.text('DGP', 26, 59);
     doc.text('Fait par:', 140, 59);
     doc.setFont('helvetica', 'bold'); // Revenez au style de police normal
-    doc.text(' Mme.', 156, 59);
+    doc.text(`Mme. ${currentUser?.lastName}`, 160, 59);
+
     
     doc.setFont('helvetica', 'normal');
     // Tableau
@@ -867,7 +890,7 @@ useEffect(() => {
                 ? ' Monsieur le chef département comptabilité générale'
                 : ' Monsieur le chef département liaisons'}
       </strong></div><br/>
-      <div className="sender3">      DGP</div>  <div className="user">Fait par : <strong>Mme. </strong></div>
+      <div className="sender3">      DGP</div>  <div className="user">Fait par : <strong>Mme. {currentUser?.lastName}</strong></div>
     </div>
   </div>
   <div className="div-table">

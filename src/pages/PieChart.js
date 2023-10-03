@@ -95,7 +95,7 @@ const PieChart = () => {
 
       setChart(newChart);
     }
-  }, [prestataires]);
+  }, [prestataires, chart]);
 
   return (
     <div style={{ width: '60%', margin: '0 auto' }}>

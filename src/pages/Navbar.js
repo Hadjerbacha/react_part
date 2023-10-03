@@ -83,7 +83,7 @@ const Navbar = () => {
     },
     {
       title: 'Tableau de bord',
-      path: '/tableau_bord',
+      path: '/Line',
       icon: <FaIcons.FaChartLine />,
       cName: 'nav-text'
     },

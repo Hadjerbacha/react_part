@@ -85,7 +85,6 @@ const LineChart = () => {
           legend: {
             display: false, // Vous pouvez afficher ou masquer la légende en fonction de vos besoins
           },
-        }, plugins: {
           title: {
             display: true,
             text: 'Évolution mensuelle des montants de facturation',

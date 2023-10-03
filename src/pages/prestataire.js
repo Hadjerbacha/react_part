@@ -16,6 +16,8 @@ function Prestataire() {
     userid: '',
     lieux:''
   });
+  formDataPrestataire.selectedUserId = formDataPrestataire.userid;
+  
   const [showModal, setShowModal] = useState(false);
   const [selectedPrestataire, setSelectedPrestataire] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
