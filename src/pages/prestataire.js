@@ -117,13 +117,18 @@ function Prestataire() {
             />
           </Form.Group>
           <Form.Group controlId="lieux" className="me-3">
-            <Form.Control
-              type="text"
-              placeholder="est ouest sud nord"
-              value={formDataPrestataire.lieux}
-              onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, lieux: e.target.value })}
-            />
-          </Form.Group>
+  <Form.Label>Lieux</Form.Label>
+  <Form.Select
+    value={formDataPrestataire.lieux}
+    onChange={(e) => setFormDataPrestataire({ ...formDataPrestataire, lieux: e.target.value })}
+  ><option value="" disabled selected>Sélectionnez le lieu</option>   
+
+    <option value="est">Est</option>
+    <option value="ouest">Ouest</option>
+    <option value="sud">Sud</option>
+    <option value="nord">Nord</option>
+  </Form.Select>
+</Form.Group>
           <Button onClick={handleAddPrestataire}><FaPlus /> Ajouter Prestataire</Button>
           <div style={{ marginLeft: '250px' }}></div> {/* Espace */}
           <Form.Group controlId="searchTerm" className="custom-search-input">
