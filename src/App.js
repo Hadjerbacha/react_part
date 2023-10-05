@@ -10,6 +10,7 @@ import ArchiveUser from "./pages/archiveUser";
 import Fournisseur from "./pages/fournisseur";
 import jwtDecode from 'jwt-decode';
 import Line from './pages/Line';
+import Test from './pages/test';
 
 function App() {
 	const user = localStorage.getItem("token");
@@ -71,6 +72,7 @@ function App() {
 			<Route path="/archiveUser" exact element={<ArchiveUser />} />
 			<Route path="/consulte" exact element={<Consulte />} />
 			<Route path="/fournisseur" exact element={<Fournisseur />} />
+			<Route path="/test" exact element={<Test />} />
 		</Routes>
 	);
 }
